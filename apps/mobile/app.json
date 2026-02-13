@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "flat-mate",
+    "slug": "flat-mate",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
