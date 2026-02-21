@@ -100,3 +100,8 @@ Profiles require a `.ac.uk` `studentEmail` today so the API can enforce student 
 - University email verification (`.ac.uk`).
 - Safety workflows (reporting, blocklist, check-in sharing).
 - Built-in chat and viewing scheduler.
+
+
+## Architecture
+
+See [TOPOLOGY.md](TOPOLOGY.md) for a visual architecture map and completion dashboard.
