@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Main React component for the flat-mate web client. Handles profile creation,
+// swipe-based matching feed, listing creation/browsing, and mutual match display.
+
 import { useMemo, useState } from "react";
 import { api } from "./api";
 

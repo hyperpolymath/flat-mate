@@ -1,48 +1,65 @@
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+# Contributing to flat-mate
+
+Thank you for your interest in contributing to flat-mate. This document explains how to get started.
+
+## Getting Started
+
+### Prerequisites
+
+- [Deno](https://deno.land/) 1.40+ (API server)
+- [Node.js](https://nodejs.org/) 20+ (web and mobile workspaces)
+- [verisimdb](https://github.com/hyperpolymath/verisimdb) running locally on port 8080
+
+### Clone and Set Up
+
+```bash
 # Clone the repository
-git clone https://{{FORGE}}/{{OWNER}}/{{REPO}}.git
-cd {{REPO}}
+git clone https://github.com/hyperpolymath/flat-mate.git
+cd flat-mate
 
-# Using Nix (recommended for reproducibility)
-nix develop
+# Install web/mobile dependencies
+npm install
 
-# Or using toolbox/distrobox
-toolbox create {{REPO}}-dev
-toolbox enter {{REPO}}-dev
-# Install dependencies manually
+# Configure the API
+cp .env.example .env
+source .env
 
-# Verify setup
-just check   # or: cargo check / mix compile / etc.
-just test    # Run test suite
+# Start verisimdb (in another terminal)
+cd /var/mnt/eclipse/repos/verisimdb
+cargo run -p verisim-api
+
+# Start the API
+deno run --watch=apps/api --allow-net --allow-env apps/api/main.ts
+
+# Start web client
+npm run dev:web
 ```
 
 ### Repository Structure
+
 ```
-{{REPO}}/
-├── src/                 # Source code (Perimeter 1-2)
-├── lib/                 # Library code (Perimeter 1-2)
-├── extensions/          # Extensions (Perimeter 2)
-├── plugins/             # Plugins (Perimeter 2)
-├── tools/               # Tooling (Perimeter 2)
-├── docs/                # Documentation (Perimeter 3)
-│   ├── architecture/    # ADRs, specs (Perimeter 2)
-│   └── proposals/       # RFCs (Perimeter 3)
-├── examples/            # Examples (Perimeter 3)
-├── spec/                # Spec tests (Perimeter 3)
-├── tests/               # Test suite (Perimeter 2-3)
-├── .well-known/         # Protocol files (Perimeter 1-3)
-├── .github/             # GitHub config (Perimeter 1)
-│   ├── ISSUE_TEMPLATE/
-│   └── workflows/
-├── CHANGELOG.md
+flat-mate/
+├── apps/
+│   ├── api/               # Deno API server (profiles, listings, swipes, matches)
+│   │   └── src/           # Config, verisimdb client, repository layer
+│   ├── web/               # React + Vite web client
+│   │   └── src/           # Components, API wrapper, styles
+│   └── mobile/            # Expo React Native mobile client
+│       └── src/           # Mobile API wrapper
+├── packages/
+│   └── shared/            # Domain models, validation, scoring, encoding
+│       └── src/           # constants, domain, encoding, index
+├── docs/                  # Architecture documentation
+├── .machine_readable/     # SCM state files (STATE.scm, META.scm, ECOSYSTEM.scm)
+├── .well-known/           # Protocol files (security.txt, humans.txt, ai.txt)
+├── .github/               # GitHub config (CODEOWNERS)
 ├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md      # This file
-├── GOVERNANCE.md
-├── LICENSE
-├── MAINTAINERS.md
-├── README.adoc
+├── CONTRIBUTING.md         # This file
+├── LICENSE                 # PMPL-1.0-or-later
+├── README.md
 ├── SECURITY.md
-├── flake.nix            # Nix flake (Perimeter 1)
-└── justfile             # Task runner (Perimeter 1)
+└── TOPOLOGY.md            # Architecture map and completion dashboard
 ```
 
 ---
@@ -53,15 +70,14 @@ just test    # Run test suite
 
 **Before reporting**:
 1. Search existing issues
-2. Check if it's already fixed in `{{MAIN_BRANCH}}`
-3. Determine which perimeter the bug affects
+2. Check if it's already fixed in `main`
 
 **When reporting**:
 
-Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
+Use the bug report template and include:
 
 - Clear, descriptive title
-- Environment details (OS, versions, toolchain)
+- Environment details (OS, Deno version, Node version)
 - Steps to reproduce
 - Expected vs actual behaviour
 - Logs, screenshots, or minimal reproduction
@@ -69,48 +85,62 @@ Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
 ### Suggesting Features
 
 **Before suggesting**:
-1. Check the [roadmap](ROADMAP.md) if available
-2. Search existing issues and discussions
-3. Consider which perimeter the feature belongs to
+1. Search existing issues and discussions
+2. Consider which app layer the feature belongs to (API, web, mobile, shared)
 
 **When suggesting**:
-
-Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
 
 - Problem statement (what pain point does this solve?)
 - Proposed solution
 - Alternatives considered
-- Which perimeter this affects
 
 ### Your First Contribution
 
 Look for issues labelled:
 
-- [`good first issue`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/good%20first%20issue) — Simple Perimeter 3 tasks
-- [`help wanted`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/help%20wanted) — Community help needed
-- [`documentation`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/documentation) — Docs improvements
-- [`perimeter-3`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/perimeter-3) — Community sandbox scope
+- [`good first issue`](https://github.com/hyperpolymath/flat-mate/labels/good%20first%20issue) -- Simple tasks
+- [`help wanted`](https://github.com/hyperpolymath/flat-mate/labels/help%20wanted) -- Community help needed
+- [`documentation`](https://github.com/hyperpolymath/flat-mate/labels/documentation) -- Docs improvements
 
 ---
 
 ## Development Workflow
 
 ### Branch Naming
+
 ```
-docs/short-description       # Documentation (P3)
-test/what-added              # Test additions (P3)
-feat/short-description       # New features (P2)
-fix/issue-number-description # Bug fixes (P2)
-refactor/what-changed        # Code improvements (P2)
-security/what-fixed          # Security fixes (P1-2)
+docs/short-description       # Documentation
+test/what-added              # Test additions
+feat/short-description       # New features
+fix/issue-number-description # Bug fixes
+refactor/what-changed        # Code improvements
+security/what-fixed          # Security fixes
 ```
 
 ### Commit Messages
 
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```
 <type>(<scope>): <description>
 
 [optional body]
 
 [optional footer]
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `security`
+
+Scopes: `api`, `web`, `mobile`, `shared`, `infra`
+
+### Code Quality
+
+- All source files must have SPDX license headers
+- Use descriptive variable names
+- Add annotations and documentation to new code
+
+---
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the [PMPL-1.0-or-later](LICENSE).

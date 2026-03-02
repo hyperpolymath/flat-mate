@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# flat-mate humans.txt
+# See https://humanstxt.org/ for format specification.
+
+/* TEAM */
+Name: Jonathan D.A. Jewell
+Role: Author and Maintainer
+Site: https://github.com/hyperpolymath
+Contact: j.d.a.jewell@open.ac.uk
+Location: United Kingdom
+
+/* SITE */
+Last update: 2026-03-02
+Language: English
+Standards: HTML5, CSS3, ECMAScript 2024
+Software: Deno, React, Expo, verisimdb

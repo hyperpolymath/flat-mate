@@ -2,6 +2,8 @@
   "name": "flat-mate",
   "version": "0.1.0",
   "private": true,
+  "license": "PMPL-1.0-or-later",
+  "author": "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
   "workspaces": [
     "apps/web",
     "apps/mobile",

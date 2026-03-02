@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Domain constants for flat-mate. London boroughs, universities, and preference scale ranges.
+
 export const LONDON_BOROUGHS = [
   "camden",
   "islington",

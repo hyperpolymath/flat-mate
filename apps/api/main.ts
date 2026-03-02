@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// flat-mate API entry point -- HTTP server routing for profiles, listings, swipes, and matches.
+
 import { serve } from "https://deno.land/std@0.220.0/http/server.ts";
 import { config } from "./src/config.ts";
 import { FlatMateRepository } from "./src/repository.ts";

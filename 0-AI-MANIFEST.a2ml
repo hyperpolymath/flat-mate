@@ -1,0 +1,48 @@
+;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; 0-AI-MANIFEST.a2ml -- Universal AI agent entry point for flat-mate
+;; All AI agents (Claude, Gemini, OpenAI, etc.) MUST read this file first.
+
+(ai-manifest
+  (version "1.0.0")
+  (last-updated "2026-03-02")
+  (project "flat-mate")
+  (description "London-first flatmate matching and room listings for students.
+    Three-app monorepo: Deno API, React web, Expo mobile, with shared domain logic.
+    Uses verisimdb hexads for persistence via vector and text search.")
+
+  (canonical-locations
+    (scm-files ".machine_readable/"
+      (note "STATE.scm, META.scm, ECOSYSTEM.scm -- ONLY in this directory, NEVER in root"))
+    (source-code
+      (api "apps/api/" (runtime "deno") (language "typescript"))
+      (web "apps/web/" (runtime "node") (language "jsx"))
+      (mobile "apps/mobile/" (runtime "expo") (language "jsx"))
+      (shared "packages/shared/" (language "javascript")))
+    (documentation "docs/")
+    (architecture "docs/architecture.md")
+    (topology "TOPOLOGY.md")
+    (license "LICENSE" (spdx "PMPL-1.0-or-later"))
+    (security "SECURITY.md")
+    (well-known ".well-known/"))
+
+  (critical-invariants
+    (invariant "SCM files MUST be in .machine_readable/ directory ONLY -- never in root")
+    (invariant "All source files MUST have SPDX-License-Identifier: PMPL-1.0-or-later headers")
+    (invariant "Author attribution: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>")
+    (invariant "Single space between A. and Jewell in author name")
+    (invariant "verisimdb is the sole persistence layer -- no other databases")
+    (invariant "London-only scope for MVP -- city is hardcoded"))
+
+  (build-and-run
+    (api "deno run --watch=apps/api --allow-net --allow-env apps/api/main.ts")
+    (web "npm run dev:web")
+    (mobile "npm run dev:mobile")
+    (prerequisite "verisimdb must be running on port 8080"))
+
+  (lifecycle-hooks
+    (on-enter
+      (read ".machine_readable/STATE.scm")
+      (read ".machine_readable/META.scm")
+      (read ".machine_readable/ECOSYSTEM.scm"))
+    (on-exit
+      (update ".machine_readable/STATE.scm" "with session progress"))))

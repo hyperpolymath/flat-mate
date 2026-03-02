@@ -1,4 +1,5 @@
-# RSR-template-repo - Editor Configuration
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# flat-mate editor configuration
 # https://editorconfig.org
 
 root = true
@@ -17,52 +18,26 @@ trim_trailing_whitespace = false
 [*.adoc]
 trim_trailing_whitespace = false
 
-[*.rs]
-indent_size = 4
-
-[*.ex]
+# JavaScript / JSX / TypeScript
+[*.{js,jsx,ts,tsx,mjs,cjs}]
 indent_size = 2
 
-[*.exs]
+# CSS
+[*.css]
 indent_size = 2
 
-[*.zig]
-indent_size = 4
-
-[*.ada]
-indent_size = 3
-
-[*.adb]
-indent_size = 3
-
-[*.ads]
-indent_size = 3
-
-[*.hs]
+# HTML
+[*.html]
 indent_size = 2
 
-[*.res]
+# JSON
+[*.json]
 indent_size = 2
 
-[*.resi]
+# YAML
+[*.{yml,yaml}]
 indent_size = 2
 
-[*.ncl]
-indent_size = 2
-
-[*.rkt]
-indent_size = 2
-
+# Scheme (SCM state files)
 [*.scm]
 indent_size = 2
-
-[*.nix]
-indent_size = 2
-
-[Justfile]
-indent_style = space
-indent_size = 4
-
-[justfile]
-indent_style = space
-indent_size = 4

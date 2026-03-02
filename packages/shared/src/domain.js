@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Domain models, validation, sanitization, compatibility scoring, and vector encoding
+// for flat-mate student profiles and room listings.
+
 import {
   CLEANLINESS_RANGE,
   LONDON_BOROUGHS,

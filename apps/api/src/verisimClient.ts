@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// HTTP client for the verisimdb API. Wraps hexad CRUD, text search, and vector search endpoints.
+
 export class VerisimClient {
   constructor(private options: { baseUrl: string }) {}
 
