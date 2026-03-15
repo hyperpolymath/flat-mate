@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
-# flat-mate
+# Flat, mate?
 
 London-first flatmate matching + room listings for students.
 
