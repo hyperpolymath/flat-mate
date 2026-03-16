@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "c7c1258a-2caa-57a8-b5a6-72271de3127f"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "flat-mate"
+prefixed-name = "ap-flat-mate"
+
+[clade]
+primary = "ap"
+secondary = []
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/flat-mate"
+gitlab = "hyperpolymath/flat-mate"
+bitbucket = "hyperpolymath/flat-mate"
+
+[lineage]
+type = "standalone"
+parent = "Flat/apartment sharing management"
+born = "2026-03-16"
