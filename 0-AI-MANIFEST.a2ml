@@ -12,7 +12,7 @@
 
   (canonical-locations
     (scm-files ".machine_readable/"
-      (note "STATE.scm, META.scm, ECOSYSTEM.scm -- ONLY in this directory, NEVER in root"))
+      (note ".machine_readable/6a2/STATE.a2ml, .machine_readable/6a2/META.a2ml, .machine_readable/6a2/ECOSYSTEM.a2ml -- ONLY in this directory, NEVER in root"))
     (source-code
       (api "apps/api/" (runtime "deno") (language "typescript"))
       (web "apps/web/" (runtime "node") (language "jsx"))
@@ -41,8 +41,8 @@
 
   (lifecycle-hooks
     (on-enter
-      (read ".machine_readable/STATE.scm")
-      (read ".machine_readable/META.scm")
-      (read ".machine_readable/ECOSYSTEM.scm"))
+      (read "`.machine_readable/6a2/STATE.a2ml`")
+      (read "`.machine_readable/6a2/META.a2ml`")
+      (read "`.machine_readable/6a2/ECOSYSTEM.a2ml`"))
     (on-exit
-      (update ".machine_readable/STATE.scm" "with session progress"))))
+      (update "`.machine_readable/6a2/STATE.a2ml`" "with session progress"))))
