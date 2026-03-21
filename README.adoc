@@ -1,0 +1,5 @@
+= flat-mate
+:toc: preamble
+:icons: font
+
+
