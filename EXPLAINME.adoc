@@ -1,24 +1,24 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
-= flat-mate — Show Me The Receipts
-:toc:
-:icons: font
+// SPDX-L-I: PMPL-.--
+= -  S M T R
+::
+:: 
 
-The README makes claims. This file backs them up.
+T RDM  . T    .
 
-[quote, README]
+[, RDM]
 ____
-See the link:README.adoc[README] for details.
+S  :RDM.[RDM]  .
 ____
 
-== File Map
+==  M
 
-[cols="1,2"]
+[=","]
 |===
-| Path | What's There
+| P | W' T
 
-| `test(s)/` | Test suite
+| `()/` | T 
 |===
 
-== Questions?
+== Q?
 
-Open an issue or reach out directly — happy to explain anything in more detail.
+O      y  y   y   .
