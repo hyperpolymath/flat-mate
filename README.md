@@ -33,14 +33,14 @@ See `docs/architecture.md`.
 1. Start verisimdb in another terminal:
 
 ```bash
-cd /var/mnt/eclipse/repos/verisimdb
+cd /var$REPOS_DIR/verisimdb
 cargo run -p verisim-api
 ```
 
 2. Install web/mobile dependencies:
 
 ```bash
-cd /var/mnt/eclipse/repos/flat-mate
+cd /var$REPOS_DIR/flat-mate
 npm install
 ```
 

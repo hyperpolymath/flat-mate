@@ -26,7 +26,7 @@ cp .env.example .env
 source .env
 
 # Start verisimdb (in another terminal)
-cd /var/mnt/eclipse/repos/verisimdb
+cd /var$REPOS_DIR/verisimdb
 cargo run -p verisim-api
 
 # Start the API
