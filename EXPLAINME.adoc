@@ -1,24 +1,42 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-= EXPLAINME — flat-mate-fix
+= Flat, mate? -- EXPLAINME
+:toc: preamble
 
-== "London-first flatmate matching + room listings for students"
+== "London-First Flatmate Matching + Room Listings for Students"
 
 [quote, README]
 ____
-Student renters in London need two things at once: matching (who to live with) and listing (where to live). flat-mate handles both in one flow, with profile compatibility and listing discovery centered around London boroughs and universities.
+Student renters in London need two things at once: matching (who to live with) and
+listing (where to live). flat-mate handles both in one flow, with profile compatibility
+and listing discovery centered around London boroughs and universities.
 ____
 
-The Deno API writes profiles, listings, and swipe events as hexads in VeriSimDB, using vector search for compatibility ranking and text search for listing discovery.
-See `docs/architecture.md` for the full data-flow diagram.
+Profiles, listings, and swipe events are stored as hexads in VeriSimDB. The API runs
+on Deno; the web client uses React + Vite; the mobile client uses Expo. See
+link:docs/architecture.md[] and link:TOPOLOGY.md[] for the full architecture.
 
-**Caveat:** The app currently requires a `.ac.uk` student email for profile creation. VeriSimDB API responses are compact, so the MVP stores encoded payloads in searchable document titles rather than using a richer query model.
+**Caveat:** This is an MVP. University email verification (`.ac.uk`) is stubbed but not
+yet enforced server-side, and the compatibility scoring uses a simple dot-product rather
+than a trained model.
 
-[cols="1,2"]
+=== Evidence
+
+[cols="2,3"]
 |===
 | Path | Proves
 
-| `apps/api/` | Deno API connecting to VeriSimDB for persistence and search
-| `apps/web/` | React + Vite web client for matching and listing flows
-| `apps/mobile/` | Expo React Native mobile client
-| `packages/shared/` | Domain models, compatibility scoring, VeriSimDB encoding helpers
+| `apps/api/`
+| Deno API server exists
+
+| `apps/web/`
+| React + Vite web client exists
+
+| `apps/mobile/`
+| Expo React Native mobile client exists
+
+| `packages/shared/`
+| Shared domain models and VeriSimDB encoding helpers
+
+| `docs/architecture.md`
+| Architecture is documented
 |===
