@@ -1,4 +1,4 @@
-= Flat Mate — Maintainer Quickstart
+= Flat Mate Fix — Maintainer Quickstart
 :toc: preamble
 
 Packaging, deployment, and release management.
@@ -31,7 +31,7 @@ Key workflows:
 
 [source,bash]
 ----
-podman build -f Containerfile -t flat-mate:latest .
+podman build -f Containerfile -t flat-mate-fix:latest .
 ----
 
 == Mirrors

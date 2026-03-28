@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)
 #
-# Flat Mate — Universal Setup Script
+# Flat Mate Fix — Universal Setup Script
 # Detects platform and shell, installs just, then hands off to Justfile.
 
 set -euo pipefail
 
 echo "═══════════════════════════════════════════════════"
-echo "  Flat Mate — Setup"
+echo "  Flat Mate Fix — Setup"
 echo "═══════════════════════════════════════════════════"
 echo ""
 

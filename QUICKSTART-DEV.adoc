@@ -1,4 +1,4 @@
-= Flat Mate — Developer Quickstart
+= Flat Mate Fix — Developer Quickstart
 :toc: preamble
 
 Clone, build, test, contribute.
@@ -13,8 +13,8 @@ Clone, build, test, contribute.
 
 [source,bash]
 ----
-git clone https://github.com/hyperpolymath/flat-mate
-cd flat-mate
+git clone https://github.com/hyperpolymath/flat-mate-fix
+cd flat-mate-fix
 just doctor    # verify toolchain
 just heal      # auto-install missing tools
 ----
