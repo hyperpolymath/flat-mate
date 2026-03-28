@@ -1,5 +1,5 @@
 {
-  description = "flat-mate - {project-description}";
+  description = "flat-mate-fix - {project-description}";
 
   # *REMINDER: Update inputs with actual dependencies*
   inputs = {
@@ -47,7 +47,7 @@
           inherit buildInputs nativeBuildInputs;
 
           shellHook = ''
-            echo "🚀 flat-mate development environment"
+            echo "🚀 flat-mate-fix development environment"
             echo "Language: javascript"
             echo ""
             echo "Available commands:"
@@ -65,7 +65,7 @@
 
         # Packages
         packages.default = pkgs.stdenv.mkDerivation {
-          pname = "flat-mate";
+          pname = "flat-mate-fix";
           version = "0.1.0";
           src = ./.;
 
@@ -75,14 +75,14 @@
             # *REMINDER: Add build commands*
             # For Rust: cargo build --release
             # For Elixir: mix compile
-            # For Ada: gprbuild -P flat-mate.gpr -XMODE=release
+            # For Ada: gprbuild -P flat-mate-fix.gpr -XMODE=release
           '';
 
           installPhase = ''
             mkdir -p $out/bin
             # *REMINDER: Add install commands*
-            # cp target/release/flat-mate $out/bin/  # Rust
-            # cp bin/flat-mate $out/bin/  # Ada
+            # cp target/release/flat-mate-fix $out/bin/  # Rust
+            # cp bin/flat-mate-fix $out/bin/  # Ada
           '';
 
           meta = with pkgs.lib; {
@@ -97,14 +97,14 @@
         # Apps
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/flat-mate";
+          program = "${self.packages.${system}.default}/bin/flat-mate-fix";
         };
 
         # Checks (CI/CD integration)
         checks = {
           build = self.packages.${system}.default;
           # *REMINDER: Add test checks*
-          test = pkgs.runCommand "test-flat-mate" {
+          test = pkgs.runCommand "test-flat-mate-fix" {
             buildInputs = [ self.packages.${system}.default ];
           } ''
             # Run tests here

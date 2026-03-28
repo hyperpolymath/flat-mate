@@ -1,6 +1,6 @@
-# LLM Warmup — flat-mate (Developer)
+# LLM Warmup — flat-mate-fix (Developer)
 
-## What is flat-mate?
+## What is flat-mate-fix?
 See README.adoc for overview.
 
 ## Key Commands
