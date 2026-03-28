@@ -1,24 +1,24 @@
-// SPDX-L-I: PMPL-.--
-= -  S M T R
-::
-:: 
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= EXPLAINME — flat-mate-fix
 
-T RDM  . T    .
+== "London-first flatmate matching + room listings for students"
 
-[, RDM]
+[quote, README]
 ____
-S  :RDM.[RDM]  .
+Student renters in London need two things at once: matching (who to live with) and listing (where to live). flat-mate handles both in one flow, with profile compatibility and listing discovery centered around London boroughs and universities.
 ____
 
-==  M
+The Deno API writes profiles, listings, and swipe events as hexads in VeriSimDB, using vector search for compatibility ranking and text search for listing discovery.
+See `docs/architecture.md` for the full data-flow diagram.
 
-[=","]
+**Caveat:** The app currently requires a `.ac.uk` student email for profile creation. VeriSimDB API responses are compact, so the MVP stores encoded payloads in searchable document titles rather than using a richer query model.
+
+[cols="1,2"]
 |===
-| P | W' T
+| Path | Proves
 
-| `()/` | T 
+| `apps/api/` | Deno API connecting to VeriSimDB for persistence and search
+| `apps/web/` | React + Vite web client for matching and listing flows
+| `apps/mobile/` | Expo React Native mobile client
+| `packages/shared/` | Domain models, compatibility scoring, VeriSimDB encoding helpers
 |===
-
-== Q?
-
-O      y  y   y   .
