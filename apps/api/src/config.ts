@@ -19,4 +19,5 @@ export const config = {
   port: Number(getEnv("PORT", String(DEFAULT_PORT))),
   verisimdbBaseUrl: getEnv("VERISIMDB_BASE_URL", DEFAULT_VERISIMDB_BASE),
   vectorDimension: Number(getEnv("VERISIMDB_VECTOR_DIM", "384")),
+  allowedOrigin: getEnv("ALLOWED_ORIGIN", "http://localhost:3000"),
 };
