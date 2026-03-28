@@ -2,7 +2,7 @@
 = Flat, mate? -- EXPLAINME
 :toc: preamble
 
-== "London-First Flatmate Matching + Room Listings for Students"
+== London-First Flatmate Matching + Room Listings for Students
 
 [quote, README]
 ____
