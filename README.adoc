@@ -1,0 +1,121 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+= Flat, mate?
+:toc: preamble
+:icons: font
+
+London-first flatmate matching + room listings for students.
+
+This repo includes:
+
+* `apps/api` — Node API using `verisimdb` as the persistence/search layer.
+* `apps/web` — React + Vite web client.
+* `apps/mobile` — Expo React Native mobile client.
+* `packages/shared` — Domain models, compatibility scoring, and verisimdb encoding helpers.
+
+== Why this MVP
+
+Student renters in London need two things at once:
+
+* *matching*: who to live with.
+* *listing*: where to live.
+
+`flat-mate` handles both in one flow, with profile compatibility and listing
+discovery centered around London boroughs and universities.
+
+== Architecture
+
+`flat-mate` writes profiles, listings, and swipe events as hexads in `verisimdb`:
+
+* `POST /hexads` for writes.
+* `GET /search/text` to retrieve encoded entities.
+* `POST /search/vector` for compatibility feed ranking.
+
+Because current `verisimdb` API responses are compact, the app stores encoded
+payloads in searchable document titles as an MVP strategy.
+
+See `docs/architecture.md`.
+
+== Quick Start
+
+. Start verisimdb in another terminal:
++
+[source,bash]
+----
+cd /var/mnt/eclipse/repos/verisimdb
+cargo run -p verisim-api
+----
+
+. Install web/mobile dependencies:
++
+[source,bash]
+----
+cd /var/mnt/eclipse/repos/flat-mate
+npm install
+----
+
+. Configure the Deno API (`deno` 1.40+ needed):
++
+[source,bash]
+----
+cp .env.example .env
+source .env
+----
+
+. Start the API:
++
+[source,bash]
+----
+deno run --watch=apps/api --allow-net --allow-env apps/api/main.ts
+----
+
+. Start web + mobile:
++
+[source,bash]
+----
+npm run dev:web
+npm run dev:mobile
+----
+
+== Environment
+
+`.env`:
+
+[source,bash]
+----
+HOST=127.0.0.1
+PORT=4000
+VERISIMDB_BASE_URL=http://127.0.0.1:8080
+VERISIMDB_VECTOR_DIM=384
+----
+
+Optional web variable: `VITE_API_BASE_URL=http://127.0.0.1:4000`
+
+Optional Expo variable: `EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:4000`
+
+Profiles require a `.ac.uk` `studentEmail` for student verification in the first pilot.
+
+== Product Scope (First Instance)
+
+* Student profile creation with compatibility preferences.
+* Swipe-style profile matching.
+* Listing creation and browsing.
+* Match discovery from mutual likes.
+
+== Next Product Increments
+
+* University email verification (`.ac.uk`).
+* Safety workflows (reporting, blocklist, check-in sharing).
+* Built-in chat and viewing scheduler.
+
+== Architecture
+
+See link:TOPOLOGY.md[TOPOLOGY.md] for a visual architecture map and completion dashboard.
+
+Wondering how this works? See link:EXPLAINME.adoc[].
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later +
+See link:LICENSE[LICENSE].
