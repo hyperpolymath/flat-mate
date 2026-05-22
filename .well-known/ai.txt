@@ -1,11 +1,11 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # flat-mate AI policy declaration
 # See https://site.spawning.ai/spawning-ai-txt for format specification.
 
 # User Agent: *
 # Disallow: /
 
-# This project is licensed under PMPL-1.0-or-later (Palimpsest License).
+# This project is licensed under MPL-2.0 (Palimpsest License).
 # AI training on this codebase must comply with the license terms,
 # particularly Section 3 (Ethical Use Requirements) regarding
 # Non-Interpretive Systems and Emotional Lineage preservation.

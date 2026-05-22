@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # Contributing to flat-mate
 
 Thank you for your interest in contributing to flat-mate. This document explains how to get started.
@@ -56,7 +56,7 @@ flat-mate/
 ├── .github/               # GitHub config (CODEOWNERS)
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md         # This file
-├── LICENSE                 # PMPL-1.0-or-later
+├── LICENSE                 # MPL-2.0
 ├── README.md
 ├── SECURITY.md
 └── TOPOLOGY.md            # Architecture map and completion dashboard
@@ -143,4 +143,4 @@ Scopes: `api`, `web`, `mobile`, `shared`, `infra`
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [PMPL-1.0-or-later](LICENSE).
+By contributing, you agree that your contributions will be licensed under the [MPL-2.0](LICENSE).
