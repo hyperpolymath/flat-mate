@@ -1,0 +1,28 @@
+{
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "name": "@hyperpolymath/flat-mate",
+  "version": "0.1.0",
+  "license": "MPL-2.0",
+  "workspace": [
+    "./apps/web",
+    "./packages/shared"
+  ],
+  "tasks": {
+    "dev:api": "deno run --watch=apps/api --allow-net --allow-env apps/api/main.ts",
+    "dev:web": "deno task --cwd apps/web dev",
+    "dev:mobile": "echo 'apps/mobile is an Expo project; run `cd apps/mobile && npm install && npm run start` (Expo CLI requires Node — see Class C carve-out in README)'",
+    "build:web": "deno task --cwd apps/web build",
+    "check": "deno check apps/api/main.ts && deno lint apps/api && deno check packages/shared/src/domain.js"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "singleQuote": false
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}
