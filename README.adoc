@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 = Flat, mate?
+image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/flat-mate"]
+
 :toc: preamble
 :icons: font
 
@@ -117,5 +120,5 @@ Wondering how this works? See link:EXPLAINME.adoc[].
 
 == License
 
-SPDX-License-Identifier: MPL-2.0 +
+SPDX-License-Identifier: MPL-2.0
 See link:LICENSE[LICENSE].
