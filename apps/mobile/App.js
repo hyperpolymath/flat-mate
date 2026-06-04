@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Main React Native component for the flat-mate mobile client. Provides profile creation,
 // swipe-based matching, listing creation/browsing, and mutual match display via tab navigation.
 

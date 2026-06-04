@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // flat-mate API entry point -- HTTP server routing for profiles, listings, swipes, and matches.
 
 import { serve } from "https://deno.land/std@0.220.0/http/server.ts";

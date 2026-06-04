@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Environment configuration for the flat-mate API. Reads from .env and provides typed defaults.
 
 import { config as loadDotenv } from "https://deno.land/std@0.220.0/dotenv/mod.ts";
