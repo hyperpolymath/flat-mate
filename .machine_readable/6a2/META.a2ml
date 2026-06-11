@@ -1,9 +1,19 @@
 # SPDX-License-Identifier: MPL-2.0
 # META.a2ml — Project meta-information
 # Converted from META.scm on 2026-03-15
+# Updated 2026-06-11: Squad Audit v1 (see docs/design/squad-audit-v1.adoc)
 
 [metadata]
 project = "flat-mate"
 author = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
 license = "MPL-2.0"
 standard = "RSR 2026"
+
+[architecture-decisions]
+# Decided 2026-06-11 (five-lens survey; see the design record for rationale)
+authoritative-spec = "docs/design/squad-audit-v1.adoc"
+# Where code and the spec disagree, the spec wins until amended.
+spec-precedence = "spec wins over code"
+layers = "harmony engine / feasibility engine / market mechanisms"
+field-governance = "epistemic: every stored field carries {purpose, revealingness, minTier} enforced at read time; no UK GDPR Art. 9 (special-category) fields by schema construction"
+# Never promise a "stable matching" — typically nonexistent (Chin-Michelen 2026); banded verdicts only.

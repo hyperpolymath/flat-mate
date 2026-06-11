@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MPL-2.0
 # ECOSYSTEM.a2ml — Ecosystem position
 # Converted from ECOSYSTEM.scm on 2026-03-15
+# Updated 2026-06-11: Squad Audit v1 (see docs/design/squad-audit-v1.adoc)
 
 [metadata]
 project = "flat-mate"
@@ -8,3 +9,12 @@ ecosystem = "hyperpolymath"
 
 [position]
 type = "component"
+market-position = "upstream of listings markets (SpareRoom etc.) — outputs a vetted household + search brief; hosts NO listings, is NOT a SpareRoom competitor"
+
+[relationships]
+consumes = "VerisimDB (estate database — sole persistence)"
+mirrors = "proven-servers/protocols/proven-epistemic — formally verified Idris2 conceal-lattice reference for the disclosure tiers in packages/shared/src/matching/conceal.js (ADR: proven-servers/docs/decisions/0002-add-proven-epistemic-disclosure-core.md)"
+
+[documents]
+# Sibling spec docs live in docs/design/
+authoritative-spec = "docs/design/squad-audit-v1.adoc"
