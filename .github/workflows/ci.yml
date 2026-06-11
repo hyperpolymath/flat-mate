@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MPL-2.0
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  engine:
+    name: Matching engine + API (fmt, lint, typecheck, tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: denoland/setup-deno@667a34cdef165d8d2b2e98dde39547c9daac7282 # v2.0.4
+        with:
+          deno-version: v2.x
+      - name: Format check (engine)
+        run: deno task fmt:check
+      - name: Lint + typecheck (engine, legacy domain, API)
+        run: deno task check
+      - name: Engine unit tests
+        run: deno task test
