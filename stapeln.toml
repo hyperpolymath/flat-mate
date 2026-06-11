@@ -43,6 +43,9 @@ packages = ["ca-certificates", "curl"]
 copy-from = [
     { layer = "build", src = "/app/", dst = "/app/" },
 ]
+# TODO(doc-drift): /app/src/index.js does not exist — the repo has no root src/;
+# the API entrypoint is apps/api/main.ts (Deno). Container config needs a
+# deliberate redesign decision; entrypoint left as-is until then.
 entrypoint = ["/app/src/index.js"]
 user = "nonroot"
 

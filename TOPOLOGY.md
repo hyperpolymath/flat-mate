@@ -2,12 +2,21 @@
 SPDX-License-Identifier: MPL-2.0
 Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 -->
-<!-- TOPOLOGY.md — Project architecture map and completion dashboard -->
-<!-- Last updated: 2026-02-19 -->
+<!-- TOPOLOGY.md — Project architecture map and status -->
+<!-- Last updated: 2026-06-11 -->
 
 # flat-mate — Project Topology
 
-## System Architecture
+Authoritative design: `docs/design/squad-audit-v1.adoc` (Squad Audit v1).
+Machine-readable state: `.machine_readable/6a2/STATE.a2ml` (completion 0,
+phase "In development"). This file must not contradict either.
+
+## System Architecture (legacy v0 marketplace)
+
+The diagram below describes the **legacy v0** profiles/swipe/listings stack,
+which remains in-tree pending a quarantine/removal decision. The Squad Audit
+v1 engine lives in `packages/shared/src/matching/` and is not yet wired into
+any app.
 
 ```
                         ┌─────────────────────────────────────────┐
@@ -46,38 +55,23 @@ Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
                         ┌─────────────────────────────────────────┐
                         │          REPO INFRASTRUCTURE            │
                         │  Deno-first API     .machine_readable/  │
-                        │  npm Monorepo       .ac.uk Verification │
+                        │  Deno Workspace     .ac.uk Domain Check │
                         └─────────────────────────────────────────┘
 ```
 
-## Completion Dashboard
+## Status
 
-```
-COMPONENT                          STATUS              NOTES
-─────────────────────────────────  ──────────────────  ─────────────────────────────────
-APPLICATIONS
-  apps/api (Deno/Node)              ██████████ 100%    Matching & listing logic stable
-  apps/web (React/Vite)             ████████░░  80%    UI components refining
-  apps/mobile (Expo)                ██████░░░░  60%    Initial mobile views active
+No completion percentages are claimed here; STATE.a2ml records completion 0,
+phase "In development".
 
-CORE LOGIC
-  packages/shared                   ██████████ 100%    Domain models verified
-  Compatibility Scoring             ████████░░  80%    Ranking algorithm refining
-  verisimdb integration             ██████████ 100%    Hexad read/write verified
-
-DATA & SEARCH
-  Vector Search Feed                ████████░░  80%    Embedding ranking stable
-  Text Search (Titles)              ██████████ 100%    Entity retrieval verified
-  Email Verification (.ac.uk)       ██████░░░░  60%    Pilot enforcement active
-
-REPO INFRASTRUCTURE
-  npm Workspace (Monorepo)          ██████████ 100%    Inter-app dependencies stable
-  .machine_readable/                ██████████ 100%    STATE tracking active
-  Environment Config                ██████████ 100%    .env.example verified
-
-─────────────────────────────────────────────────────────────────────────────
-OVERALL:                            ████████░░  ~80%   MVP stable, mobile maturing
-```
+| Component | State | Notes |
+|---|---|---|
+| Legacy v0 marketplace (`apps/api` + `packages/shared/src/domain.js`/`encoding.js`) | Working, **LEGACY** | Profiles / swipe / listings over VerisimDB. `.ac.uk` domain check enforced on every profile write (`validateProfileInput`); domain-suffix check only, no confirmation email. Pending quarantine/removal decision. |
+| Matching engine (`packages/shared/src/matching/`) | Active development | Squad Audit v1 engine per `docs/design/squad-audit-v1.adoc`. Unit tests exist (`*.test.js`; run `deno test packages/shared`). |
+| `apps/web` (React/Vite) | **LEGACY** v0 only | Wired to the legacy swipe + listings flow; not wired to the matching engine. |
+| `apps/mobile` (Expo) | **LEGACY** v0 only | Wired to the legacy flow; not wired to the matching engine. |
+| Test coverage | Matching-engine unit tests only | `tests/` contains a fuzz placeholder; no API/web/mobile tests exist. |
+| `.machine_readable/` | Present | STATE.a2ml is the source of truth for completion status. |
 
 ## Key Dependencies
 
@@ -92,10 +86,10 @@ Matching UI ◄───► API Layer ◄───────► Vector Search
 
 This file is maintained by both humans and AI agents. When updating:
 
-1. **After completing a component**: Change its bar and percentage
-2. **After adding a component**: Add a new row in the appropriate section
+1. **After changing a component's real state**: Update its row in the status
+   table — describe what exists, never a completion percentage
+2. **After adding a component**: Add a new row in the status table
 3. **After architectural changes**: Update the ASCII diagram
 4. **Date**: Update the `Last updated` comment at the top of this file
-
-Progress bars use: `█` (filled) and `░` (empty), 10 characters wide.
-Percentages: 0%, 10%, 20%, ... 100% (in 10% increments).
+5. **Consistency**: Never contradict `.machine_readable/6a2/STATE.a2ml` or
+   `docs/design/squad-audit-v1.adoc`
