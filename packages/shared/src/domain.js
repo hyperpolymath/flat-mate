@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+// LEGACY v0 (swipe + listings flow) — retained pending a quarantine/removal
+// decision; the v1 product is the Squad Audit engine in ./matching/
+// (see docs/design/squad-audit-v1.adoc). Do not extend this module.
 // Domain models, validation, sanitization, compatibility scoring, and vector encoding
 // for flat-mate student profiles and room listings.
 
