@@ -200,7 +200,7 @@ export class FlatMateRepository {
   }
 
   async listMatches(userId: string) {
-    const [outgoing, incoming, profiles] = await Promise.all([
+    const [outgoing, incoming, profilesRaw] = await Promise.all([
       this.client.textSearch(
         `flatmate_swipe from_${this.safe(userId)} like_1`,
         400,
@@ -212,6 +212,7 @@ export class FlatMateRepository {
       this.listProfiles({ limit: 400 }),
     ]);
 
+    const profiles = profilesRaw as ProfileRecord[];
     const outgoingSwipes = this.decodeEntities(outgoing, ENTITY_KINDS.SWIPE)
       .filter(
         (item) => item.fromUserId === userId && item.liked,
@@ -291,9 +292,9 @@ export class FlatMateRepository {
     return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "_");
   }
 
-  private uniqueBy(list: unknown[], keyFn: (item: any) => unknown) {
-    const seen = new Set();
-    const output = [];
+  private uniqueBy<T>(list: T[], keyFn: (item: T) => unknown) {
+    const seen = new Set<unknown>();
+    const output: T[] = [];
 
     for (const item of list) {
       const key = keyFn(item);

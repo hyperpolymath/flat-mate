@@ -2,9 +2,9 @@
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Environment configuration for the flat-mate API. Reads from .env and provides typed defaults.
 
-import { config as loadDotenv } from "https://deno.land/std@0.220.0/dotenv/mod.ts";
+import { load as loadDotenv } from "https://deno.land/std@0.220.0/dotenv/mod.ts";
 
-await loadDotenv({ export: true, allowEmptyValues: true });
+await loadDotenv({ export: true });
 
 const DEFAULT_PORT = 4000;
 const DEFAULT_VERISIMDB_BASE = "http://127.0.0.1:8080";
