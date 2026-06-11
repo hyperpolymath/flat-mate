@@ -1,14 +1,33 @@
 # SPDX-License-Identifier: MPL-2.0
 # STATE.a2ml — Project state checkpoint
 # Converted from STATE.scm on 2026-03-15
+# Updated 2026-06-11: Squad Audit v1 (see docs/design/squad-audit-v1.adoc)
 
 [metadata]
 project = "flat-mate"
 version = "0.1.0"
-last-updated = "2026-03-15"
+last-updated = "2026-06-11"
 status = "active"
 
 [project-context]
 name = "flat-mate"
-completion-percentage = 0
-phase = "In development"
+completion-percentage = 30
+phase = "Squad Audit v1 — engine layer landed, product unwired"
+focus = "Wire apps (api/web/mobile) to engine v2 at packages/shared/src/matching/"
+target = "Jan-May 2027 London second-year wave"
+
+[done]
+# 2026-06-11: Design decision record landed — docs/design/squad-audit-v1.adoc (authoritative spec)
+# 2026-06-11: Engine v2 landed at packages/shared/src/matching/ — 10 modules + 5 test files,
+#   35 tests green, lint/fmt clean (behaviour/tolerance directional scoring, feasibility/harmony
+#   split scores, banded verdicts, auditGroup, conceal lattice T0/T1/T2 with effectiveTier = min,
+#   agreement + brief artifact generators, deterministic seeds incl. broken "Bloomsbury Three" fixture)
+
+[next]
+# - Wire apps/api, apps/web, apps/mobile to engine v2 (apps are legacy v0, NOT wired, and have NO tests)
+# - Legacy v0 (swipe+listings over VerisimDB) quarantine/removal decision pending (owner)
+
+[blockers]
+# - Privacy notice, retention schedule, and a verified VerisimDB erasure + subject-access-export
+#   story are required before launch (per docs/design/squad-audit-v1.adoc, epistemic field governance)
+# - Legacy v0 quarantine decision pending

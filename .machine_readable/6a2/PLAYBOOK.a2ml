@@ -3,21 +3,29 @@
 #
 # PLAYBOOK.a2ml — Operational playbook
 # Runbooks, incident response, deployment procedures.
+# Updated 2026-06-11: Squad Audit v1 (see docs/design/squad-audit-v1.adoc)
 
 [metadata]
 version = "0.1.0"
-last-updated = "2026-03-16"
+last-updated = "2026-06-11"
 
 [deployment]
 # method = "gitops"
 # target = "container"
 
+[testing]
+# Engine v2 tests (35 tests): deno test --allow-read packages/shared/src/matching/
+#   (alias: deno task test)
+# Static checks (type-check + lint): deno task check
+# Format check: deno task fmt:check
+# Note: apps/ (api, web, mobile) have NO tests and are NOT wired to engine v2 (legacy v0).
+
 [incident-response]
-# 1. Check .machine_readable/STATE.a2ml for current status
+# 1. Check .machine_readable/6a2/STATE.a2ml for current status
 # 2. Review recent commits and CI results
-# 3. Run just validate to check compliance
+# 3. Run just doctor to check the environment, then deno task check
 
 [release-process]
-# 1. Update version in STATE.a2ml, META.a2ml
-# 2. Run just quality (format, lint, test)
+# 1. Update version in deno.json and .machine_readable/6a2/STATE.a2ml
+# 2. Run deno task fmt:check && deno task check && deno task test
 # 3. Tag and push
