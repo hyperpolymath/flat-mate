@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Wiki source pages
+:revdate: 2026-06-11
+
+These eight pages are the flat-mate GitHub wiki, versioned in-repo. Each
+carries its SPDX header inside an HTML comment, which GitHub does not render
+— so the files are wiki-publishable verbatim and licence-compliant.
+
+GitHub does not create the `flat-mate.wiki.git` repository until a first page
+is created in the web UI. To publish:
+
+1. Open https://github.com/hyperpolymath/flat-mate/wiki and click
+   "Create the first page" (any content; it will be overwritten).
+2. Then:
+
+    git clone git@github.com:hyperpolymath/flat-mate.wiki.git /tmp/fm-wiki
+    cp docs/wiki/*.md /tmp/fm-wiki/
+    cd /tmp/fm-wiki && git add -A && git commit -m "Comprehensive wiki: Squad Audit v1" && git push
+
+Pages: Home, Design-Decision-Record, Squad-Audit-Walkthrough,
+Engine-v2-Reference, Conceal-Lattice, Theory-Foundations, Data-Governance,
+Development. All numeric claims were execution-verified against the engine
+(35 tests; audits run on the real seed fixtures).
