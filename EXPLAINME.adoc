@@ -16,9 +16,17 @@ Profiles, listings, and swipe events are stored as hexads in VeriSimDB. The API 
 on Deno; the web client uses React + Vite; the mobile client uses Expo. See
 link:docs/architecture.md[] and link:TOPOLOGY.md[] for the full architecture.
 
-**Caveat:** This is an MVP. University email verification (`.ac.uk`) is stubbed but not
-yet enforced server-side, and the compatibility scoring uses a simple dot-product rather
-than a trained model.
+**Caveat:** This is an MVP. University email validation (`.ac.uk`) *is* enforced
+server-side — every profile write runs `validateProfileInput`
+(`packages/shared/src/domain.js`), which rejects non-`.ac.uk` addresses — but it is a
+domain-suffix check only: no confirmation email is sent, so address ownership is not
+verified. Compatibility scoring is explicit weighted-factor arithmetic (budget ×0.4,
+lifestyle ×0.4, preferences ×0.2), not a dot-product and not a trained model; the
+profile vector is used only for candidate retrieval in VeriSimDB. The planned evolution
+is literature-seeded weights with an outcome-calibration flywheel, not a trained model.
+
+The flow described above is the legacy v0 marketplace; the current product design is
+the Squad Audit — see link:docs/design/squad-audit-v1.adoc[].
 
 === Evidence
 
