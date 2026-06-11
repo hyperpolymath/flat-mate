@@ -10,21 +10,21 @@ export class VerisimClient {
   }
 
   async createHexad(payload: unknown) {
-    return this.request("POST", "/api/v1/hexads", payload);
+    return await this.request("POST", "/api/v1/hexads", payload);
   }
 
   async updateHexad(id: string, payload: unknown) {
-    return this.request("PUT", `/api/v1/hexads/${id}`, payload);
+    return await this.request("PUT", `/api/v1/hexads/${id}`, payload);
   }
 
   async textSearch(query: string, limit = 100) {
     const q = encodeURIComponent(query);
     const path = `/api/v1/search/text?q=${q}&limit=${limit}`;
-    return this.request("GET", path);
+    return await this.request("GET", path);
   }
 
   async vectorSearch(vector: number[], k = 15) {
-    return this.request("POST", "/api/v1/search/vector", { vector, k });
+    return await this.request("POST", "/api/v1/search/vector", { vector, k });
   }
 
   private async request(method: string, path: string, payload?: unknown) {
