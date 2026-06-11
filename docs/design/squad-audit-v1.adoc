@@ -1,0 +1,257 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= flat-mate v1 — Squad Audit: Design Decision Record
+:toc:
+:sectnums:
+
+_Decided 2026-06-11, after a five-lens survey (matching theory, market landscape,
+empirical harmony research, repo intent audit, adversarial engine critique).
+This document is the product spec. Where code and this document disagree, this
+document wins until amended._
+
+== Decision record
+
+[cols="1,3"]
+|===
+| Decision | Resolution
+
+| User moment (v1)
+| **Squad Audit**: an already-formed friend group (the UK "second-year cliff")
+  gets a harmony + feasibility audit, an auto-drafted house agreement, and a
+  search brief. Works at n=3 with zero marketplace liquidity. Stranger
+  discovery and solo-joins-household are deferred roadmap.
+
+| Data architecture
+| **Epistemic-typed server**: VerisimDB persistence, ordinary Art. 6 UK GDPR
+  controller duties accepted, **no Art. 9 (special-category) fields by schema
+  construction**. Every stored field carries governance metadata
+  `{revealingness, purpose, minTier}` enforced at read time.
+
+| Disclosure model
+| **Conceal lattice with reciprocity** (LinkedIn semantics): tiers T0 band /
+  T1 relational / T2 full; what A sees of B = `min(tierA, tierB)`. Joining an
+  audit group elects T2 within that group.
+
+| Target wave
+| **Jan–May 2027** London second-year wave. One user moment, one university to
+  seed, legal posture resolved by December 2026.
+|===
+
+== Product thesis
+
+____
+Bring the group you already have; we'll tell you if it survives a lease — and
+hand you the agreement to make sure it does.
+____
+
+UK structure creates an unserved moment: first-years are allocated halls by the
+university; by January they must form private-market groups of 3–6 with people
+they met eight weeks earlier, with no compatibility input. No incumbent serves
+this. SpareRoom owns listings liquidity; flat-mate sits **upstream** of it —
+the output of flat-mate is a vetted household plus a search brief to take to
+the listings market. flat-mate does not host listings, and is not a SpareRoom
+rival.
+
+== What we never promise (theory constraints)
+
+These are mathematical results, not engineering choices. Product copy and
+mechanism design must respect them:
+
+* **Never promise a "stable matching".** The roommate market is non-bipartite
+  (Irving's Stable Roommates problem); stable matchings may not exist, and
+  Chin & Michelen (Jan 2026, arXiv:2601.07612) proved nonexistence is the
+  *typical* case at scale. Ties (inevitable with integer scores) make even
+  deciding existence NP-complete.
+* **Couples void guarantees everywhere** (Ronn 1990: NP-complete). Couples are
+  modelled as first-class composite units and always routed through
+  heuristic-plus-verification, never through a guarantee path.
+* **Households of 3+ are hedonic games**: core-stable partitions may not
+  exist; deciding existence is Σ₂ᵖ-complete; even verifying stability is
+  coNP-complete.
+* Legitimate imports: **Roth's market design** (thickness via academic-cycle
+  cohorts, congestion control, safety); **blocking-pair detection** as a
+  polynomial advisory "stability audit"; **deferred acceptance** only for the
+  genuinely bipartite solo-joins-household sub-market; **Nash-stable
+  welfare-maximising partitions** (guaranteed to exist for our symmetric
+  scores) as the engine behind future squad suggestions.
+
+== Architecture: three layers
+
+[cols="1,2,2"]
+|===
+| Layer | Role | Status
+
+| Harmony engine
+| Predicts whether a set of people will live well together. Pure functions,
+  explainable output. The eHarmony-class layer.
+| Built (v2 spec in §5–6 corrects the v1 category error).
+
+| Feasibility engine
+| PLACE constraint satisfaction: budget intersection, move-in window, lease
+  length, household size vs HMO licensing. Greenfield — no incumbent owns it.
+| v2 splits it out of the harmony score; grows toward commute/borough later.
+
+| Market mechanisms
+| Sequenced by liquidity: (1) squad audit (no liquidity needed) →
+  (2) solo top-up discovery with conceal tiers → (3) DA rounds for
+  solo-joins-household → (4) optional batch match days.
+| v1 ships only (1).
+|===
+
+Matching rules live in `packages/shared/src/matching/` and never in UI
+components. The conceal/redaction layer is part of the engine module for the
+same reason.
+
+== Schema v2: behaviour and tolerance are different variables
+
+The v1 engine's core flaw was eliciting one variable per dimension where the
+underlying relation is directional: _my behaviour_ vs _your tolerance of that
+behaviour_. v2 elicits both, behaviour-anchored (frequencies and thresholds,
+not 1–5 self-ratings, which produce false-similarity matches via
+social-desirability bias).
+
+[cols="1,2,2"]
+|===
+| Dimension | Behaviour field | Tolerance field
+
+| Cleanliness (shared spaces) | `cleanliness` 1–5 (anchored) | `cleanlinessTolerance` 1–5 (minimum acceptable)
+| Noise | `noiseGenerated` quiet/moderate/lively | `noiseTolerance` need_quiet/average_ok/lively_ok
+| Sleep | `bedtime` before_23/23_to_1/after_1 | (similarity-scored; sensitivity folds into noise)
+| Guests | `guestFrequency` rarely/monthly/weekly/most_days + `partnerStays` never/occasional/frequent | `guestTolerance` (same scale as frequency)
+| Smoking | `smoking` no/outdoor_only/indoors | `smokingTolerance` none/outdoor_only/indoors_ok
+| Alcohol | `drinking` none/social/frequent | `drinkingTolerance` dry_household/social_ok/anything_ok
+| Social energy | `socialPreference` homebody/balanced/social | (similarity-scored)
+| Pets | `hasPets` | `petTolerance` no_pets/open_to_discuss/pets_welcome
+| Conflict style | `conflictStyle` direct/hints/house_meeting/avoid | (moderator: both-avoiders escalates warnings)
+| Money norms | `billSplitPreference` (carried → agreement, not scored) |
+|===
+
+**Removed: `accessibilityNeeds` free text.** It is Art. 9 health data, and even
+a boolean flag indirectly reveals disability (CJEU C-184/20: derived data
+liable to reveal a sensitive attribute inherits special-category status).
+Instead, the house-agreement draft includes a **universal** "access & needs —
+discuss in person" section for every group unconditionally: zero stored
+signal, same conversation prompted. The same pattern applies to guarantor
+status (a nationality proxy → indirect-discrimination exposure if stored or
+filtered): the search brief carries an unconditional per-member guarantor
+checklist item, and the platform stores nothing.
+
+Missing answers are stored as `null`, scored neutrally (0.5) with a warning —
+**absence of evidence never scores better than adverse evidence.**
+
+=== Epistemic field governance
+
+Every profile field is registered with
+`{purpose: identity|feasibility|harmony|agreement, revealingness: low|moderate|sensitive, minTier: 0|1|2}`.
+This registry is the single source for (a) read-time tier gating on the
+server, (b) the conceal lattice's redaction rules, (c) the future retention
+schedule and DPIA documentation. This is Art. 25 data-protection-by-design —
+a risk reducer and obligation organiser, **not** a compliance exemption.
+Outstanding obligation before launch: privacy notice, retention schedule, and
+a verified VerisimDB erasure + subject-access-export story.
+
+== Scoring v2
+
+Two sub-scores, never blended into one number (the v1 engine put 40% logistics
+inside "harmony"):
+
+* **Feasibility** (budget ×0.6, move-in timing ×0.25, lease length ×0.15):
+  budget pairs score by **overlap coefficient** (`overlap / min(spanA, spanB)`
+  — containment scores 1.0, fixing the Jaccard penalty on generous budgets).
+* **Harmony** (cleanliness ×0.30, noise ×0.20, guests ×0.15, bedtime ×0.10,
+  smoking ×0.10, drinking ×0.10, social ×0.05): weights seeded from the
+  conflict literature (cleanliness is the #1 predictor and **curvilinear** —
+  perfectionism also dissolves households; substance mismatch is the only
+  causally identified factor). Weights must assert sum=1 in tests and are
+  config pending the calibration flywheel.
+
+Directional dimensions score
+`factor = min(fit(A.behaviour → B.tolerance), fit(B.behaviour → A.tolerance))`
+— the weakest direction governs. Interaction semantics for drinking: heavy ×
+intolerant is penalised sharply; heavy × heavy is not penalised at all.
+
+Hard dealbreakers (curated, data-driven rules testing the **other's
+behaviour**, never their tolerance) force verdict `not_viable`. The vocabulary
+includes both tails of cleanliness (`messy` and `spotless_required`).
+
+Headline output is a **banded verdict** (`strong ≥75 / workable 55–74 /
+risky <55 / not_viable`) — raw integers imply false precision until
+calibrated. Full result: `{harmony, feasibility, verdict, reasons[],
+warnings[], dealbreakers[] (structured), dealbreakerHit, factors,
+engineVersion}`.
+
+== Group audit semantics
+
+`auditGroup(group)` is the v1 product core:
+
+* **Full pairwise matrix** over members — internal dealbreaker detection.
+  (The v1 demo group "Bloomsbury Three" contained two internal dealbreaker
+  kills no code detected; it is retained as a labelled broken fixture.)
+* **Budget by intersection** `[max(mins), min(maxes)]`, never by mean (means
+  manufacture windows no member can pay). Empty intersection = hard warning.
+* **Dispersion detection** instead of mean-of-ordinals: a 2-early-birds +
+  2-night-owls group is reported as *split*, not "average".
+* **Shared-space forecast = minimum member cleanliness behaviour** (norms
+  converge to the laxest member), naming members whose standard exceeds the
+  group minimum by ≥2 — the predicted friction nodes.
+* Weakest pair named; min and mean pair-harmony reported separately (no
+  magic blend constants).
+
+== Conceal lattice (disclosure tiers)
+
+[cols="1,3"]
+|===
+| Tier | A sees of B
+
+| T0 band | Verdict band only; dealbreakers fold into `not_viable`, unattributed.
+| T1 relational | + scores + relationally-phrased reasons ("you two differ on
+  guest norms"); no habit values, no dealbreaker attribution. Built from the
+  structured `factors`/`dealbreakers` records, never by editing T2 strings.
+| T2 full | Full reasons/warnings/factors with attribution. Default within a
+  consented audit group.
+|===
+
+`effectiveTier(a, b) = min(a.tier, b.tier)` — reciprocity: you may see at most
+what you yourself grant. Documented caveat: redaction cannot prevent
+*self-inference* (a smoker told "smoking is a hard incompatibility between
+you" learns the counterpart's dealbreaker from their own data). This is
+inherent to explainable matching and is disclosed, not denied.
+
+== Artifacts (what the user takes away)
+
+1. **Audit report** — verdicts, named divergences, weakest links (T2 within
+   the group).
+2. **House agreement draft** — auto-generated from the group's actual
+   divergence points (the one intervention with practitioner consensus), plus
+   universal sections: access & needs, guarantor checklist, money norms, a
+   48-hour raise-it conflict process, exit/replacement clause
+   (joint-and-several liability makes weakest-link financially literal).
+3. **Search brief** — budget intersection (per-person and household total),
+   move-in window, lease preference, household size with HMO licensing note
+   (mandatory at 5+ occupants; many London boroughs license 3–4), member
+   universities (commute constraint placeholder until geo lands).
+
+== Deferred roadmap (in liquidity order)
+
+1. Solo **top-up** discovery for groups with open slots — requires conceal
+   tiers (built in v1) and a consent lifecycle (Proposal → mutual accept →
+   Match), restoring the mutuality property the v0 swipe domain had.
+2. **DA rounds** for solo-joins-household — the one theory-clean centralized
+   mechanism (bipartite many-to-one); one vacancy per household per round;
+   couples via heuristic + blocking-pair verification.
+3. **Calibration flywheel** — outcome events (moved in; 1-month / 3-month
+   satisfaction) on properly anonymised aggregates; weights become fitted
+   instead of literature-seeded. One learning cycle per academic year.
+4. **Blocking-pair stability audit** over the discovery graph (advisory,
+   private, bounded to pair deviations).
+5. London/borough **prefilter re-imposition** in candidate generation when
+   discovery lands (the London-only invariant in 0-AI-MANIFEST stands; the
+   audit flow is location-light by nature).
+
+== Estate invariants (unchanged)
+
+VerisimDB sole persistence; London-first MVP; Deno-first JS-first with the
+four-file TS carve-out (AffineScript unblock conditions per
+`.claude/CLAUDE.md`); MPL-2.0; mobile via Expo. The legacy swipe+listings v0
+remains in-tree as legacy until a quarantine/removal decision; README no
+longer claims "matching + listings in one flow".
