@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= Flat Mate Fix — Developer Quickstart
+= flat-mate — Developer Quickstart
 :toc: preamble
 
 Clone, build, test, contribute.
@@ -9,16 +9,16 @@ Clone, build, test, contribute.
 
 * Git 2.40+
 * just (command runner)
-* See `just doctor` output for language-specific requirements
+* Deno 2.x
+* See `just doctor` output for further requirements
 
 == Setup
 
 [source,bash]
 ----
-git clone https://github.com/hyperpolymath/flat-mate-fix
-cd flat-mate-fix
+git clone https://github.com/hyperpolymath/flat-mate
+cd flat-mate
 just doctor    # verify toolchain
-just heal      # auto-install missing tools
 ----
 
 == Development Workflow
@@ -27,7 +27,13 @@ just heal      # auto-install missing tools
 ----
 just tour      # understand the codebase
 just help-me   # see available commands
+deno task check     # type-check + lint (api + shared)
+deno task dev:api   # run the API locally
+deno task dev:web   # run the web app locally
 ----
+
+Run the matching-engine tests (engine v2, the only tested code) with
+`deno test packages/shared/src/matching/ --allow-read` (or `deno task test`).
 
 == Before Committing
 

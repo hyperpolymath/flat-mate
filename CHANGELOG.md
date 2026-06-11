@@ -55,6 +55,25 @@ this project aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ci: update SHA pins for codeql-action and trufflehog
 - ci: deploy missing standard workflows (10 added)
 
+## [0.2.0] - 2026-06-11
+
+### Added
+
+- feat(matching): land matching engine v2 at `packages/shared/src/matching/` — directional behaviour/tolerance scoring (weakest direction governs), feasibility/harmony split scores with banded verdicts, `auditGroup` (pairwise matrix, budget intersection, dispersion detection, shared-space minimum forecast), conceal lattice disclosure tiers T0/T1/T2 with `effectiveTier = min`, house-agreement + search-brief generators; 35 unit tests across 5 test files
+
+### Changed
+
+- chore: retain legacy v0 swipe+listings stack (`domain.js`/`encoding.js`, `apps/api`, `apps/web`, `apps/mobile`) in-tree, marked LEGACY, pending a quarantine/removal decision — apps are NOT yet wired to engine v2
+
+### Documentation
+
+- docs(design): add Squad Audit v1 design decision record (`docs/design/squad-audit-v1.adoc`) — product spec: harmony+feasibility audit for already-formed groups, upstream of SpareRoom, no listings, Jan–May 2027 London target wave
+- docs: realign README and docs to the Squad Audit posture (drop the "matching + listings in one flow" claim)
+
+### CI
+
+- ci: standardize TruffleHog secret scanning
+
 ## Pre-history
 
 Prior commits to this file's introduction are recorded in git history but not formally classified into Keep-a-Changelog sections. To backfill, run `git cliff -o CHANGELOG.md` locally using the canonical [`cliff.toml`](https://github.com/hyperpolymath/standards/blob/main/templates/cliff.toml) — this is one-shot mechanical work.
