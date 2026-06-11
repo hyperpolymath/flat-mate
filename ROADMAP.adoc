@@ -1,0 +1,78 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= flat-mate Roadmap
+:author: Jonathan D.A. Jewell
+:revdate: 2026-06-11
+
+== Current State
+
+flat-mate v1 is **Squad Audit**: an already-formed student group gets a
+harmony + feasibility audit, an auto-drafted house agreement, and a search
+brief to take to the listings market. flat-mate sits upstream of SpareRoom and
+hosts no listings. Authoritative spec: `docs/design/squad-audit-v1.adoc`
+(where code and that document disagree, the document wins).
+
+Engine v2 is a tested library at `packages/shared/src/matching/` (10 modules,
+5 test files, 35 unit tests passing). The apps (`apps/api`, `apps/web`,
+`apps/mobile`) are **not yet wired to it**; the legacy v0 swipe+listings stack
+remains in-tree marked LEGACY pending a quarantine decision.
+
+**Target wave: Jan–May 2027** London second-year wave; one university to seed;
+legal posture resolved by December 2026.
+
+**What we never promise:** a "stable matching" — the roommate market is
+non-bipartite, stable matchings typically do not exist at scale
+(Chin & Michelen 2026), couples make existence NP-complete, and households of
+3+ are hedonic games whose core stability is Σ₂ᵖ-complete to decide. Product
+copy and mechanism design must respect this.
+
+The roadmap below is sequenced by **liquidity**: each stage needs more
+marketplace participation than the one before it.
+
+== NOW -- done 2026-06-11
+
+* [x] Squad Audit v1 design decision record (`docs/design/squad-audit-v1.adoc`)
+* [x] Matching engine v2 (`packages/shared/src/matching/`): directional
+  behaviour/tolerance scoring, feasibility/harmony split with banded verdicts,
+  `auditGroup` (pairwise matrix, budget intersection, dispersion detection,
+  shared-space minimum forecast), conceal lattice T0/T1/T2 with
+  `effectiveTier = min`, agreement + brief generators; 35 tests
+* [x] proven-epistemic reference core — the conceal/disclosure semantics
+  mirror the formally verified Idris2 core in proven-servers
+  (ADR: `proven-servers/docs/decisions/0002-add-proven-epistemic-disclosure-core.md`)
+
+== NEXT
+
+* [ ] Wire `apps/web` to `auditGroup` — audit-first UI (the apps currently do
+  not call engine v2 at all)
+* [ ] Legacy v0 quarantine decision — swipe+listings stack
+  (`domain.js`/`encoding.js`, `apps/api`, `apps/web`, `apps/mobile`):
+  quarantine, rewrite, or remove
+* [ ] Privacy notice + retention schedule + verified VerisimDB erasure and
+  subject-access-export story (Art. 25 obligations named in the design record)
+* [ ] ICO controller registration decision
+
+== THEN
+
+* [ ] Solo **top-up** discovery for groups with open slots — conceal tiers
+  (built in v1) plus a consent lifecycle (Proposal -> mutual accept -> Match),
+  restoring the mutuality property the v0 swipe domain had
+* [ ] **DA rounds** for solo-joins-household — the one theory-clean
+  centralized mechanism (genuinely bipartite); one vacancy per household per
+  round; couples via heuristic + blocking-pair verification, never a
+  guarantee path
+
+== LATER
+
+* [ ] **Calibration flywheel** — anonymised outcome telemetry (moved in;
+  1-month / 3-month satisfaction); literature-seeded weights become fitted;
+  one learning cycle per academic year
+* [ ] **Blocking-pair stability audit** over the discovery graph (advisory,
+  private, bounded to pair deviations)
+* [ ] Borough/commute **prefilters** in candidate generation when discovery
+  lands (London-only invariant stands; the audit flow is location-light)
+
+== Estate invariants (unchanged)
+
+VerisimDB sole persistence; London-first; Deno JS-first with the four-file TS
+carve-out in `apps/api` (see `.claude/CLAUDE.md`); MPL-2.0; mobile via Expo.

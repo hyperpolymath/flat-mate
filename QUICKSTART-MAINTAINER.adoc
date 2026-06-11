@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= Flat Mate Fix — Maintainer Quickstart
+= flat-mate — Maintainer Quickstart
 :toc: preamble
 
 Packaging, deployment, and release management.
@@ -17,24 +17,19 @@ This project uses GitHub Actions. Workflows are in `.github/workflows/`.
 
 Key workflows:
 
+* `ci.yml` — Deno fmt/check/test (`deno task fmt:check`, `check`, `test`)
 * `hypatia-scan.yml` — Neurosymbolic security scanning
-* `codeql.yml` — Code analysis
-* `scorecard.yml` — OpenSSF Scorecard
+* `scorecard-enforcer.yml` — OpenSSF Scorecard enforcement
+* `secret-scanner.yml` — Secret scanning
+* `governance.yml` — Governance checks
 * `mirror.yml` — GitLab/Bitbucket mirroring
 
 == Releasing
 
-1. Update version in project config
+1. Update version in `deno.json`
 2. Update CHANGELOG.md
 3. Tag: `git tag -s v<VERSION>`
 4. Push: `git push origin main --tags`
-
-== Container Build (if applicable)
-
-[source,bash]
-----
-podman build -f Containerfile -t flat-mate-fix:latest .
-----
 
 == Mirrors
 
