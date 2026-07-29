@@ -14,5 +14,4 @@
   (synopsis "flat-mate")
   (description "flat-mate — part of the hyperpolymath ecosystem.")
   (home-page "https://github.com/hyperpolymath/flat-mate")
-  (license ((@@ (guix licenses) license) "PMPL-1.0-or-later"
-             "https://github.com/hyperpolymath/palimpsest-license")))
+  (license mpl2.0))
