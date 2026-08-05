@@ -1,23 +1,4 @@
 # SPDX-License-Identifier: MPL-2.0
-# flat-mate CODEOWNERS
-# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
-
-# Default owner for everything in the repo
-* @hyperpolymath
-
-# API layer
-apps/api/ @hyperpolymath
-
-# Web client
-apps/web/ @hyperpolymath
-
-# Mobile client
-apps/mobile/ @hyperpolymath
-
-# Shared domain package
-packages/shared/ @hyperpolymath
-
-# Infrastructure and config
-.github/ @hyperpolymath
-.machine_readable/ @hyperpolymath
-.well-known/ @hyperpolymath
+# Solo-maintained hyperpolymath repo: no owner lines by policy.
+# See hyperpolymath/standards CODEOWNERS-POLICY.adoc (Rule 1).
+# Sole-maintainer review is moot; SPDX headers carry attribution.
