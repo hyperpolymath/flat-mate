@@ -1,24 +1,18 @@
-<!--
-SPDX-License-Identifier: CC-BY-SA-4.0
-Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
--->
-<!-- TOPOLOGY.md — Project architecture map and status -->
-<!-- Last updated: 2026-06-11 -->
+== flat-mate — Project Topology
 
-# flat-mate — Project Topology
+Authoritative design: `+docs/design/squad-audit-v1.adoc+` (Squad Audit
+v1). Machine-readable state: `+.machine_readable/6a2/STATE.a2ml+`
+(completion 0, phase "`In development`"). This file must not contradict
+either.
 
-Authoritative design: `docs/design/squad-audit-v1.adoc` (Squad Audit v1).
-Machine-readable state: `.machine_readable/6a2/STATE.a2ml` (completion 0,
-phase "In development"). This file must not contradict either.
+=== System Architecture (legacy v0 marketplace)
 
-## System Architecture (legacy v0 marketplace)
+The diagram below describes the *legacy v0* profiles/swipe/listings
+stack, which remains in-tree pending a quarantine/removal decision. The
+Squad Audit v1 engine lives in `+packages/shared/src/matching/+` and is
+not yet wired into any app.
 
-The diagram below describes the **legacy v0** profiles/swipe/listings stack,
-which remains in-tree pending a quarantine/removal decision. The Squad Audit
-v1 engine lives in `packages/shared/src/matching/` and is not yet wired into
-any app.
-
-```
+....
                         ┌─────────────────────────────────────────┐
                         │              STUDENT USERS              │
                         │        (Web App / Mobile App)           │
@@ -57,39 +51,58 @@ any app.
                         │  Deno-first API     .machine_readable/  │
                         │  Deno Workspace     .ac.uk Domain Check │
                         └─────────────────────────────────────────┘
-```
+....
 
-## Status
+=== Status
 
-No completion percentages are claimed here; STATE.a2ml records completion 0,
-phase "In development".
+No completion percentages are claimed here; STATE.a2ml records
+completion 0, phase "`In development`".
 
-| Component | State | Notes |
-|---|---|---|
-| Legacy v0 marketplace (`apps/api` + `packages/shared/src/domain.js`/`encoding.js`) | Working, **LEGACY** | Profiles / swipe / listings over VerisimDB. `.ac.uk` domain check enforced on every profile write (`validateProfileInput`); domain-suffix check only, no confirmation email. Pending quarantine/removal decision. |
-| Matching engine (`packages/shared/src/matching/`) | Active development | Squad Audit v1 engine per `docs/design/squad-audit-v1.adoc`. Unit tests exist (`*.test.js`; run `deno test packages/shared`). |
-| `apps/web` (React/Vite) | **LEGACY** v0 only | Wired to the legacy swipe + listings flow; not wired to the matching engine. |
-| `apps/mobile` (Expo) | **LEGACY** v0 only | Wired to the legacy flow; not wired to the matching engine. |
-| Test coverage | Matching-engine unit tests only | `tests/` contains a fuzz placeholder; no API/web/mobile tests exist. |
-| `.machine_readable/` | Present | STATE.a2ml is the source of truth for completion status. |
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Component |State |Notes
+|Legacy v0 marketplace (`+apps/api+` +
+`+packages/shared/src/domain.js+`/`+encoding.js+`) |Working, *LEGACY*
+|Profiles / swipe / listings over VerisimDB. `+.ac.uk+` domain check
+enforced on every profile write (`+validateProfileInput+`);
+domain-suffix check only, no confirmation email. Pending
+quarantine/removal decision.
 
-## Key Dependencies
+|Matching engine (`+packages/shared/src/matching/+`) |Active development
+|Squad Audit v1 engine per `+docs/design/squad-audit-v1.adoc+`. Unit
+tests exist (`+*.test.js+`; run `+deno test packages/shared+`).
 
-```
+|`+apps/web+` (React/Vite) |*LEGACY* v0 only |Wired to the legacy swipe
++ listings flow; not wired to the matching engine.
+
+|`+apps/mobile+` (Expo) |*LEGACY* v0 only |Wired to the legacy flow; not
+wired to the matching engine.
+
+|Test coverage |Matching-engine unit tests only |`+tests/+` contains a
+fuzz placeholder; no API/web/mobile tests exist.
+
+|`+.machine_readable/+` |Present |STATE.a2ml is the source of truth for
+completion status.
+|===
+
+=== Key Dependencies
+
+....
 User Profile ───► Hexad Encoding ───► verisimdb (Write)
      │                 │                   │
      ▼                 ▼                   ▼
 Matching UI ◄───► API Layer ◄───────► Vector Search
-```
+....
 
-## Update Protocol
+=== Update Protocol
 
 This file is maintained by both humans and AI agents. When updating:
 
-1. **After changing a component's real state**: Update its row in the status
-   table — describe what exists, never a completion percentage
-2. **After adding a component**: Add a new row in the status table
-3. **After architectural changes**: Update the ASCII diagram
-4. **Date**: Update the `Last updated` comment at the top of this file
-5. **Consistency**: Never contradict `.machine_readable/6a2/STATE.a2ml` or
-   `docs/design/squad-audit-v1.adoc`
+[arabic]
+. *After changing a component’s real state*: Update its row in the
+status table — describe what exists, never a completion percentage
+. *After adding a component*: Add a new row in the status table
+. *After architectural changes*: Update the ASCII diagram
+. *Date*: Update the `+Last updated+` comment at the top of this file
+. *Consistency*: Never contradict `+.machine_readable/6a2/STATE.a2ml+`
+or `+docs/design/squad-audit-v1.adoc+`
