@@ -1,4 +1,12 @@
 // SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module main;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // flat-mate API entry point -- HTTP server routing for profiles, listings, swipes, and matches.
 
@@ -140,3 +148,5 @@ function jsonResponse(status: number, payload: unknown) {
     headers: corsHeaders,
   });
 }
+
+==================================== */
