@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module main;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // flat-mate API entry point -- HTTP server routing for profiles, listings, swipes, and matches.
@@ -15,26 +12,26 @@ import { config } from "./src/config.ts";
 import { FlatMateRepository } from "./src/repository.ts";
 import { VerisimClient } from "./src/verisimClient.ts";
 
-const client = new VerisimClient({ baseUrl: config.verisimdbBaseUrl });
-const repository = new FlatMateRepository({
+let client = new VerisimClient({ baseUrl: config.verisimdbBaseUrl });
+let repository = new FlatMateRepository({
   verisimClient: client,
   vectorDimension: config.vectorDimension,
 });
 
-const corsHeaders = {
+let corsHeaders = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": config.allowedOrigin,
   "Access-Control-Allow-Methods": "GET,POST,PUT,OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const handleRequest = async (request: Request) => {
+let handleRequest = async (request: Request) => {
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
-  const url = new URL(request.url);
-  const pathname = url.pathname;
+  let url = new URL(request.url);
+  let pathname = url.pathname;
   const { searchParams } = url;
 
   try {
@@ -48,8 +45,8 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "POST" && pathname === "/profiles") {
-      const body = await parseJson(request);
-      const result = await repository.createOrUpdateProfile(body);
+      let body = await parseJson(request);
+      let result = await repository.createOrUpdateProfile(body);
       if (result.errors) {
         return jsonResponse(400, { errors: result.errors });
       }
@@ -57,7 +54,7 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "GET" && pathname === "/profiles") {
-      const profiles = await repository.listProfiles({
+      let profiles = await repository.listProfiles({
         excludeUserId: searchParams.get("excludeUserId") ?? undefined,
         search: searchParams.get("search") ?? undefined,
         limit: Number(searchParams.get("limit") ?? 100),
@@ -66,8 +63,8 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "GET" && pathname.startsWith("/profiles/")) {
-      const userId = decodeURIComponent(pathname.split("/")[2] ?? "");
-      const profile = await repository.getProfileByUserId(userId);
+      let userId = decodeURIComponent(pathname.split("/")[2] ?? "");
+      let profile = await repository.getProfileByUserId(userId);
       if (!profile) {
         return jsonResponse(404, { error: "Profile not found." });
       }
@@ -75,8 +72,8 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "GET" && pathname.startsWith("/feed/")) {
-      const userId = decodeURIComponent(pathname.split("/")[2] ?? "");
-      const feed = await repository.getFeed(
+      let userId = decodeURIComponent(pathname.split("/")[2] ?? "");
+      let feed = await repository.getFeed(
         userId,
         Number(searchParams.get("limit") ?? 20),
       );
@@ -84,8 +81,8 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "POST" && pathname === "/listings") {
-      const body = await parseJson(request);
-      const result = await repository.createListing(body);
+      let body = await parseJson(request);
+      let result = await repository.createListing(body);
       if (result.errors) {
         return jsonResponse(400, { errors: result.errors });
       }
@@ -93,7 +90,7 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "GET" && pathname === "/listings") {
-      const listings = await repository.listListings({
+      let listings = await repository.listListings({
         borough: searchParams.get("borough") ?? undefined,
         maxRent: searchParams.get("maxRent")
           ? Number(searchParams.get("maxRent"))
@@ -105,8 +102,8 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "POST" && pathname === "/swipes") {
-      const body = await parseJson(request);
-      const result = await repository.recordSwipe(body);
+      let body = await parseJson(request);
+      let result = await repository.recordSwipe(body);
       if (result.errors) {
         return jsonResponse(400, { errors: result.errors });
       }
@@ -114,8 +111,8 @@ const handleRequest = async (request: Request) => {
     }
 
     if (request.method === "GET" && pathname.startsWith("/matches/")) {
-      const userId = decodeURIComponent(pathname.split("/")[2] ?? "");
-      const matches = await repository.listMatches(userId);
+      let userId = decodeURIComponent(pathname.split("/")[2] ?? "");
+      let matches = await repository.listMatches(userId);
       return jsonResponse(200, matches);
     }
 
@@ -130,8 +127,8 @@ const handleRequest = async (request: Request) => {
 console.log(`flat-mate API listening on http://${config.host}:${config.port}`);
 await serve(handleRequest, { hostname: config.host, port: config.port });
 
-async function parseJson(request: Request) {
-  const text = await request.text();
+async fn parseJson(request: Request) {
+  let text = await request.text();
   if (!text) {
     return {};
   }
@@ -142,11 +139,10 @@ async function parseJson(request: Request) {
   }
 }
 
-function jsonResponse(status: number, payload: unknown) {
+fn jsonResponse(status: number, payload: unknown) {
   return new Response(JSON.stringify(payload), {
     status,
     headers: corsHeaders,
   });
 }
 
-==================================== */

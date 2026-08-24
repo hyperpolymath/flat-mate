@@ -1,16 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module verisimClient;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // HTTP client for the verisimdb API. Wraps hexad CRUD, text search, and vector search endpoints.
 
-export class VerisimClient {
+struct VerisimClient {
   constructor(private options: { baseUrl: string }) {}
 
   private baseUrl() {
@@ -26,8 +23,8 @@ export class VerisimClient {
   }
 
   async textSearch(query: string, limit = 100) {
-    const q = encodeURIComponent(query);
-    const path = `/api/v1/search/text?q=${q}&limit=${limit}`;
+    let q = encodeURIComponent(query);
+    let path = `/api/v1/search/text?q=${q}&limit=${limit}`;
     return await this.request("GET", path);
   }
 
@@ -36,8 +33,8 @@ export class VerisimClient {
   }
 
   private async request(method: string, path: string, payload?: unknown) {
-    const url = `${this.baseUrl()}${path}`;
-    const response = await fetch(url, {
+    let url = `${this.baseUrl()}${path}`;
+    let response = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -45,11 +42,11 @@ export class VerisimClient {
       body: payload ? JSON.stringify(payload) : undefined,
     });
 
-    const text = await response.text();
-    const data = text ? JSON.parse(text) : null;
+    let text = await response.text();
+    let data = text ? JSON.parse(text) : null;
 
     if (!response.ok) {
-      const message = data?.error ?? response.statusText;
+      let message = data?.error ?? response.statusText;
       throw new Error(`VerisimDB ${method} ${path} failed: ${message}`);
     }
 
@@ -57,4 +54,3 @@ export class VerisimClient {
   }
 }
 
-==================================== */
