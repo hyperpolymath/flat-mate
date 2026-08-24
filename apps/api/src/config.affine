@@ -1,4 +1,12 @@
 // SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module config;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Environment configuration for the flat-mate API. Reads from .env and provides typed defaults.
 
@@ -21,3 +29,5 @@ export const config = {
   vectorDimension: Number(getEnv("VERISIMDB_VECTOR_DIM", "384")),
   allowedOrigin: getEnv("ALLOWED_ORIGIN", "http://localhost:3000"),
 };
+
+==================================== */
