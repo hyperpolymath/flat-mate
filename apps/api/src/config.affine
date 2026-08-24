@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module config;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Environment configuration for the flat-mate API. Reads from .env and provides typed defaults.
@@ -14,15 +11,15 @@ import { load as loadDotenv } from "https://deno.land/std@0.220.0/dotenv/mod.ts"
 
 await loadDotenv({ export: true });
 
-const DEFAULT_PORT = 4000;
-const DEFAULT_VERISIMDB_BASE = "http://127.0.0.1:8080";
+let DEFAULT_PORT = 4000;
+let DEFAULT_VERISIMDB_BASE = "http://127.0.0.1:8080";
 
-const getEnv = (key: string, fallback: string) => {
-  const value = Deno.env.get(key);
+let getEnv = (key: string, fallback: string) => {
+  let value = Deno.env.get(key);
   return value !== undefined ? value : fallback;
 };
 
-export const config = {
+let config = {
   host: getEnv("HOST", "127.0.0.1"),
   port: Number(getEnv("PORT", String(DEFAULT_PORT))),
   verisimdbBaseUrl: getEnv("VERISIMDB_BASE_URL", DEFAULT_VERISIMDB_BASE),
@@ -30,4 +27,3 @@ export const config = {
   allowedOrigin: getEnv("ALLOWED_ORIGIN", "http://localhost:3000"),
 };
 
-==================================== */

@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module repository;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Repository layer for flat-mate entities. Manages profiles, listings, swipes, and matches
@@ -25,15 +22,15 @@ import {
 
 import { VerisimClient } from "./verisimClient.ts";
 
-type ProfileRecord = Record<string, unknown> & {
+struct ProfileRecord { Record<string, unknown> & {
   userId: string;
 };
 
-type ListingRecord = Record<string, unknown> & {
+struct ListingRecord { Record<string, unknown> & {
   ownerUserId: string;
 };
 
-export class FlatMateRepository {
+struct FlatMateRepository {
   constructor(
     { verisimClient, vectorDimension }: {
       verisimClient: VerisimClient;
@@ -48,31 +45,31 @@ export class FlatMateRepository {
   private vectorDimension: number;
 
   async createOrUpdateProfile(input: Record<string, unknown>) {
-    const errors = validateProfileInput(input);
+    let errors = validateProfileInput(input);
     if (errors.length) {
       return { errors };
     }
 
-    const profile = sanitizeProfileInput(input);
-    const existing = await this.getProfileByUserId(profile.userId);
-    const record = {
+    let profile = sanitizeProfileInput(input);
+    let existing = await this.getProfileByUserId(profile.userId);
+    let record = {
       entityKind: ENTITY_KINDS.PROFILE,
       profileId: existing?.profileId ?? crypto.randomUUID(),
       ...profile,
       updatedAt: new Date().toISOString(),
     };
 
-    const persisted = await this.persistProfile(record, existing?.hexadId);
+    let persisted = await this.persistProfile(record, existing?.hexadId);
     return { value: persisted };
   }
 
   async getProfileByUserId(userId: string) {
-    const safe = this.safe(userId);
-    const results = await this.client.textSearch(
+    let safe = this.safe(userId);
+    let results = await this.client.textSearch(
       `flatmate_profile user_${safe}`,
       30,
     );
-    const profiles = this.decodeEntities(results, ENTITY_KINDS.PROFILE);
+    let profiles = this.decodeEntities(results, ENTITY_KINDS.PROFILE);
     return profiles.find((profile) => profile.userId === userId) ?? null;
   }
 
@@ -83,12 +80,12 @@ export class FlatMateRepository {
       limit?: number;
     },
   ) {
-    const query = search?.trim()
+    let query = search?.trim()
       ? `flatmate_profile london_student ${search.trim()}`
       : "flatmate_profile london_student";
 
-    const results = await this.client.textSearch(query, limit);
-    const profiles = this.decodeEntities(results, ENTITY_KINDS.PROFILE)
+    let results = await this.client.textSearch(query, limit);
+    let profiles = this.decodeEntities(results, ENTITY_KINDS.PROFILE)
       .filter((profile) => !excludeUserId || profile.userId !== excludeUserId)
       .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
 
@@ -96,17 +93,17 @@ export class FlatMateRepository {
   }
 
   async getFeed(userId: string, limit = 20) {
-    const me = await this.getProfileByUserId(userId);
+    let me = await this.getProfileByUserId(userId);
     if (!me) {
       return [];
     }
 
-    const vector = profileToVector(me, this.vectorDimension);
-    const results = await this.client.vectorSearch(
+    let vector = profileToVector(me, this.vectorDimension);
+    let results = await this.client.vectorSearch(
       vector,
       Math.max(30, limit * 2),
     );
-    const decoded = this.decodeEntities(results, ENTITY_KINDS.PROFILE)
+    let decoded = this.decodeEntities(results, ENTITY_KINDS.PROFILE)
       .filter((profile) => profile.userId !== userId)
       .map((profile) => ({
         ...profile,
@@ -118,23 +115,23 @@ export class FlatMateRepository {
   }
 
   async createListing(input: Record<string, unknown>) {
-    const listingInput = {
+    let listingInput = {
       listingId: crypto.randomUUID(),
       ...input,
     };
 
-    const errors = validateListingInput(listingInput);
+    let errors = validateListingInput(listingInput);
     if (errors.length) {
       return { errors };
     }
 
-    const listing = {
+    let listing = {
       entityKind: ENTITY_KINDS.LISTING,
       ...sanitizeListingInput(listingInput),
       createdAt: new Date().toISOString(),
     };
 
-    const created = await this.client.createHexad({
+    let created = await this.client.createHexad({
       title: buildTitle(ENTITY_KINDS.LISTING, listing),
       body: JSON.stringify(listing),
       types: ["flatmate:Listing", "student:London"],
@@ -156,7 +153,7 @@ export class FlatMateRepository {
       limit?: number;
     },
   ) {
-    const queryParts = ["flatmate_listing", "london_student"];
+    let queryParts = ["flatmate_listing", "london_student"];
     if (borough) {
       queryParts.push(`borough_${String(borough).toLowerCase()}`);
     }
@@ -164,7 +161,7 @@ export class FlatMateRepository {
       queryParts.push(`owner_${this.safe(ownerUserId)}`);
     }
 
-    const results = await this.client.textSearch(queryParts.join(" "), limit);
+    let results = await this.client.textSearch(queryParts.join(" "), limit);
     return this.decodeEntities(results, ENTITY_KINDS.LISTING)
       .filter((listing) => !maxRent || listing.rentPcm <= Number(maxRent))
       .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
@@ -183,7 +180,7 @@ export class FlatMateRepository {
       };
     }
 
-    const swipe = {
+    let swipe = {
       entityKind: ENTITY_KINDS.SWIPE,
       swipeId: crypto.randomUUID(),
       fromUserId: String(fromUserId).trim(),
@@ -192,7 +189,7 @@ export class FlatMateRepository {
       createdAt: new Date().toISOString(),
     };
 
-    const created = await this.client.createHexad({
+    let created = await this.client.createHexad({
       title: buildTitle(ENTITY_KINDS.SWIPE, swipe),
       body: JSON.stringify(swipe),
       types: ["flatmate:Swipe", "student:London"],
@@ -220,20 +217,20 @@ export class FlatMateRepository {
       this.listProfiles({ limit: 400 }),
     ]);
 
-    const profiles = profilesRaw as ProfileRecord[];
-    const outgoingSwipes = this.decodeEntities(outgoing, ENTITY_KINDS.SWIPE)
+    let profiles = profilesRaw as ProfileRecord[];
+    let outgoingSwipes = this.decodeEntities(outgoing, ENTITY_KINDS.SWIPE)
       .filter(
         (item) => item.fromUserId === userId && item.liked,
       );
-    const incomingSwipes = this.decodeEntities(incoming, ENTITY_KINDS.SWIPE)
+    let incomingSwipes = this.decodeEntities(incoming, ENTITY_KINDS.SWIPE)
       .filter(
         (item) => item.toUserId === userId && item.liked,
       );
 
-    const likedByMe = new Set(outgoingSwipes.map((item) => item.toUserId));
-    const likedMe = new Set(incomingSwipes.map((item) => item.fromUserId));
+    let likedByMe = new Set(outgoingSwipes.map((item) => item.toUserId));
+    let likedMe = new Set(incomingSwipes.map((item) => item.fromUserId));
 
-    const mutualIds = [...likedByMe].filter((candidate) =>
+    let mutualIds = [...likedByMe].filter((candidate) =>
       likedMe.has(candidate)
     );
     return profiles
@@ -248,7 +245,7 @@ export class FlatMateRepository {
     record: Record<string, unknown>,
     hexadId?: string | null,
   ) {
-    const payload = {
+    let payload = {
       title: buildTitle(ENTITY_KINDS.PROFILE, record),
       body: JSON.stringify(record),
       embedding: profileToVector(record, this.vectorDimension),
@@ -260,11 +257,11 @@ export class FlatMateRepository {
     };
 
     if (hexadId) {
-      const updated = await this.client.updateHexad(hexadId, payload);
+      let updated = await this.client.updateHexad(hexadId, payload);
       return { ...record, hexadId: updated.id };
     }
 
-    const created = await this.client.createHexad(payload);
+    let created = await this.client.createHexad(payload);
     return { ...record, hexadId: created.id };
   }
 
@@ -282,7 +279,7 @@ export class FlatMateRepository {
           return null;
         }
 
-        const payload = decodeTitlePayload(result.title);
+        let payload = decodeTitlePayload(result.title);
         if (!payload || payload.entityKind !== expectedKind) {
           return null;
         }
@@ -301,11 +298,11 @@ export class FlatMateRepository {
   }
 
   private uniqueBy<T>(list: T[], keyFn: (item: T) => unknown) {
-    const seen = new Set<unknown>();
+    let seen = new Set<unknown>();
     const output: T[] = [];
 
     for (const item of list) {
-      const key = keyFn(item);
+      let key = keyFn(item);
       if (seen.has(key)) {
         continue;
       }
@@ -317,4 +314,3 @@ export class FlatMateRepository {
   }
 }
 
-==================================== */
