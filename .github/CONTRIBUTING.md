@@ -57,8 +57,8 @@ npm run dev:web
     ├── .machine_readable/     # SCM state files (STATE.scm, META.scm, ECOSYSTEM.scm)
     ├── .well-known/           # Protocol files (security.txt, humans.txt, ai.txt)
     ├── .github/               # GitHub config (CODEOWNERS)
+    │   └── CONTRIBUTING.md    # This file
     ├── CODE_OF_CONDUCT.md
-    ├── CONTRIBUTING.md         # This file
     ├── LICENSE                 # MPL-2.0
     ├── README.md
     ├── SECURITY.md
