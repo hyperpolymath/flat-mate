@@ -157,4 +157,4 @@ Scopes: `api`, `web`, `mobile`, `shared`, `infra`
 ## License
 
 By contributing, you agree that your contributions will be licensed
-under the <a href="LICENSE" class="0">MPL-2</a>.
+under the <a href="../LICENSE" class="0">MPL-2</a>.
