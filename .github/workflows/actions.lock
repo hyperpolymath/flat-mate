@@ -101,6 +101,6 @@ dependencies:
         repo_id: 220359305
     'trufflesecurity/trufflehog@v3.97.5':
         ref: 'v3.97.5'
-        commit: 'sha1-288a8a8643a2c5a36b81d231c550dccfa0beeb64'
+        commit: 'sha1-f714bf454f350590f4a24c3ddb1aef02c35bf5b6'
         owner_id: 79229934
         repo_id: 77726177
