@@ -37,10 +37,13 @@ link:docs/design/squad-audit-v1.adoc[].
 
 == Architecture
 
-`flat-mate` writes entities as hexads in `verisimdb` (`POST /hexads`,
-`GET /search/text`, `POST /search/vector`). Because current `verisimdb` API
-responses are compact, the app stores encoded payloads in searchable document
-titles as an MVP strategy.
+The legacy v0 flow writes entities as octads through the pinned VeriSimDB
+v0.2.0 API (`POST /api/v1/octads`, `GET /api/v1/search/text`,
+`POST /api/v1/search/vector`). App-facing `OctadInput` payloads are adapted to
+that release's actual REST `OctadRequest`; this is deliberately more than a
+route rename. Because the server's search responses are compact, the app
+stores encoded payloads in searchable document titles as an MVP strategy.
+See link:docs/verisimdb-contract.adoc[the verified contract and test guide].
 
 The in-tree profile/listing/swipe write paths are the legacy v0 flow. The v1
 target is an epistemic-typed server: per-field governance metadata,
@@ -48,16 +51,18 @@ conceal-lattice disclosure tiers, no special-category fields by schema
 construction — see the design doc. Matching rules live in
 `packages/shared/src/matching/`, never in UI components.
 
-See `docs/architecture.md`, link:TOPOLOGY.md[], and link:EXPLAINME.adoc[].
+See link:docs/architecture.adoc[], link:TOPOLOGY.adoc[], and link:EXPLAINME.adoc[].
 
 == Quick Start
 
-. Start verisimdb in another terminal:
+. Start the pinned VeriSimDB server in another terminal:
 +
 [source,bash]
 ----
-cd /var/mnt/eclipse/repos/verisimdb
-cargo run -p verisim-api
+git clone https://github.com/hyperpolymath/verisimdb.git
+cd verisimdb
+git checkout 10f8a21f4d0f2eacce84eee29e504f66fbe9e332
+VERISIM_ENABLE_IPV4=true cargo run -p verisim-api
 ----
 
 . Install web/mobile dependencies:

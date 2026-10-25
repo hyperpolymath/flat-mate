@@ -3,7 +3,7 @@
 // LEGACY v0 — retained pending a quarantine/removal decision (see
 // docs/design/squad-audit-v1.adoc); the title-encoding scheme is a
 // self-declared disposable MVP strategy. Do not extend this module.
-// Entity encoding for verisimdb hexad titles. Packs entity payloads into base64url tokens
+// Entity encoding for VeriSimDB octad document titles. Packs entity payloads into base64url tokens
 // embedded within searchable title strings, enabling text-based entity retrieval.
 
 const safeToken = (value) =>

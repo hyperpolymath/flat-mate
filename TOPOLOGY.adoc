@@ -35,7 +35,7 @@ not yet wired into any app.
                                    ▼                   ▼
                         ┌───────────────────────┐  ┌────────────────────────────────┐
                         │ SHARED PACKAGE        │  │ VERISIMDB INTERFACE            │
-                        │ - Domain Models       │  │ - Hexad encoding               │
+                        │ - Domain Models       │  │ - Octad document encoding      │
                         │ - Compatibility Logic │  │ - Vector/Text search           │
                         └──────────┬────────────┘  └──────────┬─────────────────────┘
                                    │                          │
@@ -88,7 +88,7 @@ completion status.
 === Key Dependencies
 
 ....
-User Profile ───► Hexad Encoding ───► verisimdb (Write)
+User Profile ───► Octad Document Encoding ───► verisimdb (Write)
      │                 │                   │
      ▼                 ▼                   ▼
 Matching UI ◄───► API Layer ◄───────► Vector Search

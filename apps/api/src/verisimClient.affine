@@ -5,52 +5,32 @@ module verisimClient;
 
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-// HTTP client for the verisimdb API. Wraps hexad CRUD, text search, and vector search endpoints.
+// HTTP client for the pinned VeriSimDB v0.2.0 API. OctadInput payloads are
+// adapted to that release's actual OctadRequest wire format by the JS transport.
+
+import {
+  requestCreateOctad,
+  requestTextSearch,
+  requestUpdateOctad,
+  requestVectorSearch,
+} from "./verisimTransport.js";
 
 struct VerisimClient {
   constructor(private options: { baseUrl: string }) {}
 
-  private baseUrl() {
-    return this.options.baseUrl.replace(/\/$/, "");
+  async createOctad(payload: unknown) {
+    return await requestCreateOctad(this.options.baseUrl, payload);
   }
 
-  async createHexad(payload: unknown) {
-    return await this.request("POST", "/api/v1/hexads", payload);
-  }
-
-  async updateHexad(id: string, payload: unknown) {
-    return await this.request("PUT", `/api/v1/hexads/${id}`, payload);
+  async updateOctad(id: string, payload: unknown) {
+    return await requestUpdateOctad(this.options.baseUrl, id, payload);
   }
 
   async textSearch(query: string, limit = 100) {
-    let q = encodeURIComponent(query);
-    let path = `/api/v1/search/text?q=${q}&limit=${limit}`;
-    return await this.request("GET", path);
+    return await requestTextSearch(this.options.baseUrl, query, limit);
   }
 
   async vectorSearch(vector: number[], k = 15) {
-    return await this.request("POST", "/api/v1/search/vector", { vector, k });
-  }
-
-  private async request(method: string, path: string, payload?: unknown) {
-    let url = `${this.baseUrl()}${path}`;
-    let response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: payload ? JSON.stringify(payload) : undefined,
-    });
-
-    let text = await response.text();
-    let data = text ? JSON.parse(text) : null;
-
-    if (!response.ok) {
-      let message = data?.error ?? response.statusText;
-      throw new Error(`VerisimDB ${method} ${path} failed: ${message}`);
-    }
-
-    return data;
+    return await requestVectorSearch(this.options.baseUrl, vector, k);
   }
 }
-

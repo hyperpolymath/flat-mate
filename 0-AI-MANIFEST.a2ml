@@ -8,7 +8,7 @@
   (project "flat-mate")
   (description "London-first flatmate matching and room listings for students.
     Three-app monorepo: Deno API, React web, Expo mobile, with shared domain logic.
-    Uses verisimdb hexads for persistence via vector and text search.")
+    Uses pinned VeriSimDB v0.2.0 octads for persistence via vector and text search.")
 
   (canonical-locations
     (scm-files ".machine_readable/"

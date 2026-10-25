@@ -8,6 +8,7 @@ repository = "https://github.com/hyperpolymath/nextgen-databases"
 data-store = "verisimdb-data"
 
 [feed-config]
+# Legacy analytics-feed format only; not the flat-mate app's VeriSimDB API contract.
 emit-scan-results = true
 emit-build-metrics = true
 emit-dependency-graph = true

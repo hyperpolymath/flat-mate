@@ -27,10 +27,15 @@ directly.
 * Shared legacy modules (`+packages/shared/src/domain.js+`,
 `+encoding.js+`, `+constants.js+`) own validation, the v1 compatibility
 scoring, and vectorization.
-* The apps have *no tests*.
+* The web and mobile apps have *no tests*. The legacy API has pinned
+VeriSimDB transport contract tests; its live integration test is opt-in.
 
-Persistence model: entities are stored as VerisimDB `+hexads+` using the
-`+document+` + optional `+vector+` modalities.
+Persistence model: entities are stored as VeriSimDB `+octads+` through the
+pinned v0.2.0 REST contract. Listing/swipe inputs use `+document+` and
+`+semantic+`; user-profile inputs add `+vector+`. This modality selection is
+distinct from the application's user-profile domain record. See
+link:verisimdb-contract.adoc[`+docs/verisimdb-contract.adoc+`] for the
+`+OctadInput+` to `+OctadRequest+` compatibility boundary.
 
 Entity kinds: `+flatmate_profile+`, `+flatmate_listing+`,
 `+flatmate_swipe+`.
@@ -39,7 +44,7 @@ Payload encoding strategy (intentionally pragmatic for current VerisimDB
 API constraints):
 
 * Add searchable tokens (`+flatmate_profile+`, `+borough_camden+`, etc.)
-to the hexad title.
+to the octad's document title.
 * Append a base64url payload to the title for deterministic decode on
 read.
 * Keep the body as human-readable JSON for audit/debug.

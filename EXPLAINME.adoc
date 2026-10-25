@@ -12,9 +12,11 @@ listing (where to live). flat-mate handles both in one flow, with profile compat
 and listing discovery centered around London boroughs and universities.
 ____
 
-Profiles, listings, and swipe events are stored as hexads in VeriSimDB. The API runs
-on Deno; the web client uses React + Vite; the mobile client uses Expo. See
-link:docs/architecture.md[] and link:TOPOLOGY.md[] for the full architecture.
+Profiles, listings, and swipe events in the legacy v0 flow are stored as octads
+through the pinned VeriSimDB v0.2.0 API. The API runs on Deno; the web client
+uses React + Vite; the mobile client uses Expo. See link:docs/architecture.adoc[],
+link:TOPOLOGY.adoc[], and link:docs/verisimdb-contract.adoc[] for the architecture
+and persistence contract.
 
 **Caveat:** This is an MVP. University email validation (`.ac.uk`) *is* enforced
 server-side — every profile write runs `validateProfileInput`
@@ -46,6 +48,6 @@ the Squad Audit — see link:docs/design/squad-audit-v1.adoc[].
 | `packages/shared/`
 | Shared domain models and VeriSimDB encoding helpers
 
-| `docs/architecture.md`
+| `docs/architecture.adoc`
 | Architecture is documented
 |===
