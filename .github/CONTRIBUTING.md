@@ -29,9 +29,11 @@ npm install
 cp .env.example .env
 source .env
 
-# Start verisimdb (in another terminal)
-cd /var$REPOS_DIR/verisimdb
-cargo run -p verisim-api
+# Start the pinned VeriSimDB server (in another terminal)
+git clone https://github.com/hyperpolymath/verisimdb.git
+cd verisimdb
+git checkout 10f8a21f4d0f2eacce84eee29e504f66fbe9e332
+VERISIM_HOST=127.0.0.1 VERISIM_ENABLE_IPV4=true cargo run -p verisim-api
 
 # Start the API
 deno run --watch=apps/api --allow-net --allow-env apps/api/main.ts

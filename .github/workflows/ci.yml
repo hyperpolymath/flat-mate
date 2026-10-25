@@ -1,30 +1,77 @@
 # This workflow is managed by gh actions-lock.
 # SPDX-License-Identifier: MPL-2.0
 # This workflow is managed by gh actions-lock.
-name: CI
-on:
-  pull_request:
-  push:
-    branches: [main]
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-permissions:
-  actions: read
-  contents: read
-jobs:
-  engine:
-    name: Matching engine + API (fmt, lint, typecheck, tests)
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: denoland/setup-deno@v2.0.5
-        with:
-          deno-version: v2.x
-      - name: Format check (engine)
-        run: deno task fmt:check
-      - name: Lint + typecheck (engine, legacy domain, API)
-        run: deno task check
-      - name: Engine unit tests
-        run: deno task test
+---
+{
+  name: "CI",
+  on: {
+    pull_request: null,
+    push: {
+      branches: [
+        "main",
+      ],
+    },
+  },
+  concurrency: {
+    group: "${{ github.workflow }}-${{ github.ref }}",
+    cancel-in-progress: true,
+  },
+  # Checkout and Actions metadata are read-only; no write token is needed.
+  permissions: {
+    actions: "read",
+    contents: "read",
+  },
+  jobs: {
+    engine: {
+      name: "Matching engine + API contract (lint, typecheck, tests)",
+      runs-on: "ubuntu-latest",
+      timeout-minutes: 10,
+      steps: [
+        {
+          uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1", # v7.0.1
+          with: {
+            persist-credentials: false,
+          },
+        },
+        {
+          uses: "denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed", # v2.0.5
+          with: {
+            deno-version: "2.9.6",
+          },
+        },
+        {
+          name: "Format check (changed JavaScript)",
+          run: "deno fmt --check packages/shared/src/encoding.js apps/api/src/verisimTransport.js apps/api/src/verisimTransport.contract.js tests/integration/verisimdb_contract.js",
+        },
+        {
+          name: "Lint + typecheck (engine, legacy domain, API transport)",
+          run: "deno lint packages/shared/src apps/api/src/verisimTransport.js apps/api/src/verisimTransport.contract.js tests/integration/verisimdb_contract.js && deno check packages/shared/src/index.js packages/shared/src/matching/index.js apps/api/src/verisimTransport.js",
+        },
+        {
+          name: "Engine unit tests",
+          run: "deno test packages/shared/src",
+        },
+        {
+          name: "Install verified Bun 1.4.2",
+          run: "set -euo pipefail\ncurl --proto '=https' --proto-redir '=https' --fail --silent --show-error --location https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64.zip --output \"$RUNNER_TEMP/bun.zip\"\necho \"36368faef7527875d5ffa52e53cd48021741f2a83eb6208a8dd64068d422a913  $RUNNER_TEMP/bun.zip\" | sha256sum --check --strict\nunzip -q \"$RUNNER_TEMP/bun.zip\" -d \"$RUNNER_TEMP\"\necho \"$RUNNER_TEMP/bun-linux-x64\" >> \"$GITHUB_PATH\"\n",
+        },
+        {
+          name: "Install contract-test dependencies",
+          run: "bun install --frozen-lockfile --ignore-scripts --cwd apps/api",
+        },
+        {
+          name: "VeriSimDB v0.2.0 consumer contract tests",
+          run: "cd apps/api && bun test ./src/verisimTransport.contract.js",
+        },
+        {
+          name: "Install pinned ijson-jcs",
+          run: "cargo install --git https://github.com/hyperpolymath/ijson-jcs --rev 0fdeea716fd558e9807362acf6f8202d56d8d88f --locked ijson-jcs",
+        },
+        {
+          name: "New JSON is I-JSON + JCS",
+          run: "ijson-jcs check apps/api/package.json\nijson-jcs check tests/contracts/verisimdb/v0.2.0/manifest.json\nijson-jcs check tests/contracts/verisimdb/v0.2.0/octad-input.json\n",
+        },
+      ],
+    },
+  },
+}

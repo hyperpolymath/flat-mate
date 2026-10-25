@@ -6,7 +6,8 @@ module repository;
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Repository layer for flat-mate entities. Manages profiles, listings, swipes, and matches
-// using verisimdb hexads as the underlying persistence mechanism.
+// using VeriSimDB octads as the underlying persistence mechanism. Application user profiles
+// are domain records, not VeriSimDB modality profiles.
 
 import {
   buildTitle,
@@ -59,7 +60,7 @@ struct FlatMateRepository {
       updatedAt: new Date().toISOString(),
     };
 
-    let persisted = await this.persistProfile(record, existing?.hexadId);
+    let persisted = await this.persistProfile(record, existing?.octadId);
     return { value: persisted };
   }
 
@@ -131,10 +132,14 @@ struct FlatMateRepository {
       createdAt: new Date().toISOString(),
     };
 
-    let created = await this.client.createHexad({
-      title: buildTitle(ENTITY_KINDS.LISTING, listing),
-      body: JSON.stringify(listing),
-      types: ["flatmate:Listing", "student:London"],
+    let created = await this.client.createOctad({
+      document: {
+        title: buildTitle(ENTITY_KINDS.LISTING, listing),
+        body: JSON.stringify(listing),
+      },
+      semantic: {
+        types: ["flatmate:Listing", "student:London"],
+      },
       metadata: {
         entityKind: ENTITY_KINDS.LISTING,
         borough: (listing as ListingRecord).borough,
@@ -142,7 +147,7 @@ struct FlatMateRepository {
       },
     });
 
-    return { value: { ...listing, hexadId: created.id } };
+    return { value: { ...listing, octadId: created.id } };
   }
 
   async listListings(
@@ -189,10 +194,14 @@ struct FlatMateRepository {
       createdAt: new Date().toISOString(),
     };
 
-    let created = await this.client.createHexad({
-      title: buildTitle(ENTITY_KINDS.SWIPE, swipe),
-      body: JSON.stringify(swipe),
-      types: ["flatmate:Swipe", "student:London"],
+    let created = await this.client.createOctad({
+      document: {
+        title: buildTitle(ENTITY_KINDS.SWIPE, swipe),
+        body: JSON.stringify(swipe),
+      },
+      semantic: {
+        types: ["flatmate:Swipe", "student:London"],
+      },
       metadata: {
         entityKind: ENTITY_KINDS.SWIPE,
         fromUserId: swipe.fromUserId,
@@ -201,7 +210,7 @@ struct FlatMateRepository {
       },
     });
 
-    return { value: { ...swipe, hexadId: created.id } };
+    return { value: { ...swipe, octadId: created.id } };
   }
 
   async listMatches(userId: string) {
@@ -243,26 +252,32 @@ struct FlatMateRepository {
 
   private async persistProfile(
     record: Record<string, unknown>,
-    hexadId?: string | null,
+    octadId?: string | null,
   ) {
     let payload = {
-      title: buildTitle(ENTITY_KINDS.PROFILE, record),
-      body: JSON.stringify(record),
-      embedding: profileToVector(record, this.vectorDimension),
-      types: ["flatmate:Profile", "student:London"],
+      document: {
+        title: buildTitle(ENTITY_KINDS.PROFILE, record),
+        body: JSON.stringify(record),
+      },
+      vector: {
+        embedding: profileToVector(record, this.vectorDimension),
+      },
+      semantic: {
+        types: ["flatmate:Profile", "student:London"],
+      },
       metadata: {
         entityKind: ENTITY_KINDS.PROFILE,
         userId: (record as ProfileRecord).userId,
       },
     };
 
-    if (hexadId) {
-      let updated = await this.client.updateHexad(hexadId, payload);
-      return { ...record, hexadId: updated.id };
+    if (octadId) {
+      let updated = await this.client.updateOctad(octadId, payload);
+      return { ...record, octadId: updated.id };
     }
 
-    let created = await this.client.createHexad(payload);
-    return { ...record, hexadId: created.id };
+    let created = await this.client.createOctad(payload);
+    return { ...record, octadId: created.id };
   }
 
   private decodeEntities(results: unknown, expectedKind: string) {
@@ -286,7 +301,7 @@ struct FlatMateRepository {
 
         return {
           ...payload,
-          hexadId: result.id,
+          octadId: result.id,
           score: result.score ?? null,
         };
       })

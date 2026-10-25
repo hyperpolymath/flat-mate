@@ -3,7 +3,7 @@
 // LEGACY v0 — retained pending a quarantine/removal decision (see
 // docs/design/squad-audit-v1.adoc); the title-encoding scheme is a
 // self-declared disposable MVP strategy. Do not extend this module.
-// Entity encoding for verisimdb hexad titles. Packs entity payloads into base64url tokens
+// Entity encoding for VeriSimDB octad document titles. Packs entity payloads into base64url tokens
 // embedded within searchable title strings, enabling text-based entity retrieval.
 
 const safeToken = (value) =>
@@ -15,7 +15,7 @@ const safeToken = (value) =>
 export const ENTITY_KINDS = {
   PROFILE: "flatmate_profile",
   LISTING: "flatmate_listing",
-  SWIPE: "flatmate_swipe"
+  SWIPE: "flatmate_swipe",
 };
 
 function base64Encode(bytes) {
@@ -37,8 +37,12 @@ function base64Decode(value) {
   return buffer;
 }
 
+/** Encode bytes as base64url without trailing padding. */
 function toBase64Url(bytes) {
-  return base64Encode(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return base64Encode(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(
+    /=+$/,
+    "",
+  );
 }
 
 function fromBase64Url(value) {
@@ -59,6 +63,12 @@ function decodePayload(value) {
   return JSON.parse(text);
 }
 
+/**
+ * Build a searchable title ending in the JSON payload encoded as base64url.
+ * Profile and listing kinds select their respective search tokens; every other
+ * kind uses swipe tokens. JSON serialisation errors, such as circular references
+ * or BigInt values, propagate to the caller.
+ */
 export function buildTitle(kind, payload) {
   const encoded = encodePayload(payload);
 
@@ -70,7 +80,7 @@ export function buildTitle(kind, payload) {
       `uni_${safeToken(payload.university)}`,
       `borough_${safeToken(payload.preferredBorough)}`,
       `rent_${payload.minRent}_${payload.maxRent}`,
-      encoded
+      encoded,
     ].join(" ");
   }
 
@@ -82,7 +92,7 @@ export function buildTitle(kind, payload) {
       `owner_${safeToken(payload.ownerUserId)}`,
       `borough_${safeToken(payload.borough)}`,
       `rent_${payload.rentPcm}`,
-      encoded
+      encoded,
     ].join(" ");
   }
 
@@ -92,7 +102,7 @@ export function buildTitle(kind, payload) {
     `from_${safeToken(payload.fromUserId)}`,
     `to_${safeToken(payload.toUserId)}`,
     `like_${payload.liked ? "1" : "0"}`,
-    encoded
+    encoded,
   ].join(" ");
 }
 

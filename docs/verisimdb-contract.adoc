@@ -1,0 +1,173 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+= VeriSimDB API contract (legacy v0 app)
+:toc: preamble
+
+== Target decision
+
+The old client had only `VERISIMDB_BASE_URL`: it did not pin or probe a server
+version, so a running deployment's version cannot be inferred retrospectively
+from this repository. There is also no configuration or documentation for an
+intentionally legacy hexad service. The quick start instead instructed the
+operator to run `verisim-api` from an upstream source checkout. Thus the
+intended target was current upstream, not a declared legacy compatibility
+mode. "Legacy v0" describes flat-mate's swipe/listings product flow; it does
+not identify a VeriSimDB server version.
+
+This client now targets **VeriSimDB v0.2.0**, Git commit
+`10f8a21f4d0f2eacce84eee29e504f66fbe9e332`, with the `/api/v1` REST prefix. The
+pin is recorded in `apps/api/src/verisimTransport.js` and
+`tests/contracts/verisimdb/v0.2.0/manifest.json`. The vendored
+`octad-input.json` preserves the upstream parsed schema but is serialised as
+I-JSON + JCS under estate rule D306. The manifest records both the original
+upstream byte hash (`sourceSha256`,
+`0b7570a1b17dcf6fa376fc1a19e554953c0d700136da95e6eaa470db66356946`) and the
+local canonical hash (`canonicalSha256`,
+`9e769ed30ebac70419e325839e712673b8cf6f116f2f6ad8f65fd27cd5925aa7`). The latter
+covers the exact JCS bytes without the file's single trailing LF.
+
+The target was checked on 2026-10-24. Upstream `main` was then at
+`72837ebc169c75ae678a33d21f7813bec8dd4405`; its relevant `OctadInput`,
+`OctadRequest`, octad handlers, and search result shapes were unchanged from
+v0.2.0. The release pin, rather than floating `main`, remains authoritative.
+
+== The two upstream shapes are not interchangeable
+
+The route change alone is not a safe migration. At the pinned commit these
+sources describe different layers:
+
+* link:https://github.com/hyperpolymath/verisimdb/blob/10f8a21f4d0f2eacce84eee29e504f66fbe9e332/connectors/shared/json-schema/octad-input.json[`octad-input.json`]
+  publishes the nested `OctadInput` data schema.
+* link:https://github.com/hyperpolymath/verisimdb/blob/10f8a21f4d0f2eacce84eee29e504f66fbe9e332/rust-core/verisim-api/src/lib.rs[`rust-core/verisim-api/src/lib.rs`]
+  defines the executable REST contract. Its `create_octad_handler` and
+  `update_octad_handler` deserialize **`OctadRequest`**, then call
+  `to_octad_input()` internally. The upstream handler tests also construct
+  this flat request type.
+
+[cols="1,2,2",options="header"]
+|===
+|Operation |Published data shape |Actual v0.2.0 REST wire shape
+
+|Create
+|`OctadInput`; `POST /api/v1/octads`; 201
+|Flat `OctadRequest`; compact `OctadResponse`
+
+|Update
+|`OctadInput`; `PUT /api/v1/octads/{id}`; 200
+|Flat `OctadRequest`; compact `OctadResponse`
+
+|Text search
+|`GET /api/v1/search/text?q=...&limit=...`
+|Array of `{id, score, title}` (`title` is nullable)
+
+|Vector search
+|`POST /api/v1/search/vector` with `{vector, k}`
+|Array of `{id, score, title}` (`title` is nullable)
+|===
+
+For example, the application's nested input is:
+
+[source,json]
+----
+{
+  "document": {"title": "searchable title", "body": "{...}"},
+  "vector": {"embedding": [0.1, 0.2]},
+  "semantic": {"types": ["flatmate:Profile"]},
+  "metadata": {"userId": "user-123"}
+}
+----
+
+The v0.2.0 REST handler instead requires this wire representation to populate
+the same modalities:
+
+[source,json]
+----
+{
+  "title": "searchable title",
+  "body": "{...}",
+  "embedding": [0.1, 0.2],
+  "types": ["flatmate:Profile"],
+  "metadata": {"userId": "user-123"}
+}
+----
+
+Posting the first object directly to the pinned REST handler is **not** a
+valid migration. That handler does not deny unknown fields; the nested
+`document`, `vector`, and `semantic` keys can therefore be ignored while all
+flat `Option` fields remain empty, risking a successful but empty write.
+Likewise, the OpenAPI response references must not be used to replace the
+client's compact search-result decoder with a full-octad decoder without an
+upstream server change.
+
+`toOctadRequest()` in `verisimTransport.js` is the explicit compatibility
+boundary. Repositories construct schema-valid `OctadInput`; the transport
+emits the verified flat `OctadRequest`. Fields that are valid in the published
+schema but cannot be represented by this REST handler (`document.fields`,
+`vector.model`, and non-empty `semantic.properties`) are rejected rather than
+silently discarded. The old `/api/v1/hexads` routes and `createHexad` /
+`updateHexad` methods are not retained as aliases: no hexad service is a
+supported target.
+
+== Modality profiles vs application profiles
+
+A **modality profile** names the selected VeriSimDB input modalities and their
+constraints. It is not a flat-mate user/profile concept.
+
+* A flat-mate **user profile** is a domain record containing identity,
+  preferences, and matching data. Its current persistence input selects
+  `document + semantic + vector`: three of the eight Octad modality slots.
+* A listing or swipe persistence input selects `document + semantic`: two
+  input modality slots. It does not acquire a vector merely because user
+  profiles have one.
+* `metadata` is an entity-level string map, not a ninth modality. Temporal and
+  provenance behaviour managed by the server is not counted in these input
+  selections.
+
+These are application-specific, versioned choices, not a claim that arbitrary
+modality subsets are accepted by every VeriSimDB API. **Octad** remains the
+name of the exact eight-modality v0.2.0 entity/API; neither "hexad" nor
+"modality profile" is used as a number-agnostic alias for it.
+
+== Tests and upgrade rule
+
+Fast consumer contract tests validate representative inputs against the
+vendored schema, assert the actual flat wire payloads and endpoints, cover
+partial updates and compact search results, and reject lossy mappings:
+
+[source,bash]
+----
+bun install --frozen-lockfile --ignore-scripts --cwd apps/api
+bun test ./apps/api/src/verisimTransport.contract.js
+----
+
+Bun 1.4.2 and the lockfile make this test path reproducible. Ajv 8.17.1 remains
+the JSON Schema validator; `ijson-jcs` has the separate job of enforcing I-JSON
+and JCS on the manifest, vendored schema, and Bun manifest. CI installs the
+pinned `hyperpolymath/ijson-jcs` CLI and checks those files. The CI workflow
+keeps GitHub's required `.yml` filename but its content is KYAML. To apply the
+same JSON checks locally, install that CLI and run `ijson-jcs check FILE` on
+each path. The `.contract.js` suffix keeps this Bun test explicit and outside
+Deno's default discovery for the legacy suite.
+
+An opt-in live integration test verifies create, text search, vector search,
+partial update, and delete against real storage. Start `verisim-api` from the
+pinned commit, then run:
+
+[source,bash]
+----
+VERISIMDB_BASE_URL=http://127.0.0.1:8080 \
+VERISIMDB_CONTRACT_COMMIT=10f8a21f4d0f2eacce84eee29e504f66fbe9e332 \
+bun test ./tests/integration/verisimdb_contract.js
+----
+
+The commit environment variable is an operator attestation for the disposable
+test server, not automatic version detection. The v0.2.0 health endpoint's
+package version is not a Git commit attestation.
+
+For an upgrade, change the pin only after comparing the new executable REST
+handlers and schemas, updating the vendored contract, and passing both test
+layers against that server. If upstream later accepts nested `OctadInput`
+natively, remove the flattening adapter as part of that separately pinned
+migration; do not infer wire compatibility from a route name or from the core
+`OctadInput` type alone.

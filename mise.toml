@@ -6,7 +6,7 @@ rust = "latest"
 go = "latest"
 zig = "latest"
 java = "latest"
-bun = "latest"
+bun = "1.4.2"
 denojs = "latest"
 
 # Package managers
