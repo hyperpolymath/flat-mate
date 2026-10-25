@@ -37,6 +37,7 @@ function base64Decode(value) {
   return buffer;
 }
 
+/** Encode bytes as base64url without trailing padding. */
 function toBase64Url(bytes) {
   return base64Encode(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(
     /=+$/,
@@ -62,6 +63,12 @@ function decodePayload(value) {
   return JSON.parse(text);
 }
 
+/**
+ * Build a searchable title ending in the JSON payload encoded as base64url.
+ * Profile and listing kinds select their respective search tokens; every other
+ * kind uses swipe tokens. JSON serialisation errors, such as circular references
+ * or BigInt values, propagate to the caller.
+ */
 export function buildTitle(kind, payload) {
   const encoded = encodePayload(payload);
 

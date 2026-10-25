@@ -21,8 +21,10 @@ const INPUT_KEYS = [
   "metadata",
 ];
 
+/** Treat null and undefined as omitted modality values. */
 const present = (value) => value !== undefined && value !== null;
 
+/** Return value unchanged; reject null, arrays and non-objects with a path-labelled Error. */
 function record(value, path) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(
@@ -32,6 +34,7 @@ function record(value, path) {
   return value;
 }
 
+/** Throw a path-labelled Error for an enumerable own string key absent from allowed. */
 function onlyKeys(value, allowed, path) {
   for (const key of Object.keys(value)) {
     if (!allowed.includes(key)) {
@@ -42,6 +45,7 @@ function onlyKeys(value, allowed, path) {
   }
 }
 
+/** Copy a string array, or throw a path-labelled Error for invalid input. */
 function strings(value, path) {
   if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
     throw new Error(`${path} must be an array of strings.`);
@@ -49,6 +53,7 @@ function strings(value, path) {
   return [...value];
 }
 
+/** Copy string-valued own enumerable entries; throw a path-labelled Error for invalid input. */
 function stringMap(value, path) {
   record(value, path);
   for (const [key, item] of Object.entries(value)) {
@@ -59,6 +64,7 @@ function stringMap(value, path) {
   return { ...value };
 }
 
+/** Copy a finite-number array, or throw a path-labelled Error for invalid input. */
 function numbers(value, path) {
   if (
     !Array.isArray(value) ||
@@ -71,8 +77,17 @@ function numbers(value, path) {
 
 /**
  * Convert the published OctadInput data schema to the flat OctadRequest that
- * the v0.2.0 REST handler actually deserializes. Do not post OctadInput
+ * the v0.2.0 REST handler actually deserialises. Do not post OctadInput
  * directly to that release: unknown nested fields are ignored by Serde.
+ *
+ * Returns a new request object, omitting null or undefined modalities. A present
+ * semantic block without types emits an empty types array. This is an adapter,
+ * not a complete schema validator; provenance and spatial values are otherwise
+ * forwarded without validation, except for spatial.properties.
+ *
+ * Throws an Error for unknown keys, invalid checked fields, non-empty
+ * document.fields or semantic.properties, or any defined vector.model.
+ * Metadata, when supplied, must be an object of string values.
  */
 export function toOctadRequest(input) {
   record(input, "OctadInput");
@@ -210,6 +225,16 @@ export function toOctadRequest(input) {
   return output;
 }
 
+/**
+ * Send JSON to a path relative to the server root, ignoring trailing baseUrl slashes.
+ * fetchImpl overrides globalThis.fetch; an undefined payload omits the body.
+ * Resolves to parsed response JSON, or null for an empty successful response.
+ *
+ * Rejects when Fetch is unavailable, an HTTP status is unsuccessful, or a
+ * successful response contains invalid JSON. Unsuccessful responses use their
+ * JSON error/message, raw text (including invalid JSON), or status text as the
+ * error message. Fetch, response-reading and JSON serialisation errors propagate.
+ */
 async function request(baseUrl, method, path, payload, fetchImpl) {
   const fetcher = fetchImpl ?? globalThis.fetch;
   if (typeof fetcher !== "function") {
@@ -244,6 +269,12 @@ async function request(baseUrl, method, path, payload, fetchImpl) {
   return data;
 }
 
+/**
+ * Create an octad from nested OctadInput at the server root baseUrl.
+ * Throws synchronously if toOctadRequest rejects the payload. Returns the
+ * request promise with parsed JSON (or null for an empty body); {@link request} errors
+ * propagate. fetchImpl optionally replaces globalThis.fetch.
+ */
 export function requestCreateOctad(baseUrl, payload, fetchImpl) {
   return request(
     baseUrl,
@@ -254,11 +285,24 @@ export function requestCreateOctad(baseUrl, payload, fetchImpl) {
   );
 }
 
+/**
+ * Update an octad by URL-encoded id using nested OctadInput; omitted modalities
+ * are absent from the request. baseUrl is the server root; fetchImpl optionally
+ * replaces globalThis.fetch. Payload adaptation and id encoding errors throw
+ * synchronously. Returns the request promise with parsed JSON (or null for an
+ * empty body), propagating {@link request} errors.
+ */
 export function requestUpdateOctad(baseUrl, id, payload, fetchImpl) {
   const path = `/api/v1/octads/${encodeURIComponent(id)}`;
   return request(baseUrl, "PUT", path, toOctadRequest(payload), fetchImpl);
 }
 
+/**
+ * Search text at the server root baseUrl, passing limit through without validation.
+ * Resolves to the server's JSON results unchanged, or null for an empty body.
+ * Query encoding errors throw synchronously; {@link request} errors propagate through
+ * the returned promise. fetchImpl optionally replaces globalThis.fetch.
+ */
 export function requestTextSearch(baseUrl, query, limit = 100, fetchImpl) {
   const q = encodeURIComponent(query);
   return request(
@@ -270,6 +314,12 @@ export function requestTextSearch(baseUrl, query, limit = 100, fetchImpl) {
   );
 }
 
+/**
+ * Search by vector at the server root baseUrl, requesting k neighbours without
+ * validating vector or k locally. Resolves to the server's JSON results unchanged,
+ * or null for an empty body. {@link request} errors propagate through the returned
+ * promise. fetchImpl optionally replaces globalThis.fetch.
+ */
 export function requestVectorSearch(baseUrl, vector, k = 15, fetchImpl) {
   return request(
     baseUrl,
