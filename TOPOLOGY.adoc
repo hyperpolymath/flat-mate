@@ -78,8 +78,9 @@ tests exist (`+*.test.js+`; run `+deno test packages/shared+`).
 |`+apps/mobile+` (Expo) |*LEGACY* v0 only |Wired to the legacy flow; not
 wired to the matching engine.
 
-|Test coverage |Matching-engine unit tests only |`+tests/+` contains a
-fuzz placeholder; no API/web/mobile tests exist.
+|Test coverage |Matching-engine unit tests and legacy API contract tests
+|`+tests/+` contains a fuzz placeholder and an opt-in VeriSimDB live
+integration test; no web/mobile tests exist.
 
 |`+.machine_readable/+` |Present |STATE.a2ml is the source of truth for
 completion status.

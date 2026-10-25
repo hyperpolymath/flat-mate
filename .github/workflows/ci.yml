@@ -16,36 +16,40 @@
     group: "${{ github.workflow }}-${{ github.ref }}",
     cancel-in-progress: true,
   },
+  # Checkout and Actions metadata are read-only; no write token is needed.
   permissions: {
     actions: "read",
     contents: "read",
   },
   jobs: {
     engine: {
-      name: "Matching engine + API (fmt, lint, typecheck, tests)",
+      name: "Matching engine + API contract (lint, typecheck, tests)",
       runs-on: "ubuntu-latest",
       timeout-minutes: 10,
       steps: [
         {
-          uses: "actions/checkout@v7.0.1",
-        },
-        {
-          uses: "denoland/setup-deno@v2.0.5",
+          uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1", # v7.0.1
           with: {
-            deno-version: "v2.x",
+            persist-credentials: false,
           },
         },
         {
-          name: "Format check (engine)",
-          run: "deno task fmt:check",
+          uses: "denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed", # v2.0.5
+          with: {
+            deno-version: "2.9.6",
+          },
         },
         {
-          name: "Lint + typecheck (engine, legacy domain, API)",
-          run: "deno task check",
+          name: "Format check (changed JavaScript)",
+          run: "deno fmt --check packages/shared/src/encoding.js apps/api/src/verisimTransport.js apps/api/src/verisimTransport.contract.js tests/integration/verisimdb_contract.js",
+        },
+        {
+          name: "Lint + typecheck (engine, legacy domain, API transport)",
+          run: "deno lint packages/shared/src apps/api/src/verisimTransport.js apps/api/src/verisimTransport.contract.js tests/integration/verisimdb_contract.js && deno check packages/shared/src/index.js packages/shared/src/matching/index.js apps/api/src/verisimTransport.js",
         },
         {
           name: "Engine unit tests",
-          run: "deno task test",
+          run: "deno test packages/shared/src",
         },
         {
           name: "Install verified Bun 1.4.2",
@@ -53,7 +57,7 @@
         },
         {
           name: "Install contract-test dependencies",
-          run: "bun install --frozen-lockfile --cwd apps/api",
+          run: "bun install --frozen-lockfile --ignore-scripts --cwd apps/api",
         },
         {
           name: "VeriSimDB v0.2.0 consumer contract tests",

@@ -15,7 +15,7 @@ const safeToken = (value) =>
 export const ENTITY_KINDS = {
   PROFILE: "flatmate_profile",
   LISTING: "flatmate_listing",
-  SWIPE: "flatmate_swipe"
+  SWIPE: "flatmate_swipe",
 };
 
 function base64Encode(bytes) {
@@ -38,7 +38,10 @@ function base64Decode(value) {
 }
 
 function toBase64Url(bytes) {
-  return base64Encode(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return base64Encode(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(
+    /=+$/,
+    "",
+  );
 }
 
 function fromBase64Url(value) {
@@ -70,7 +73,7 @@ export function buildTitle(kind, payload) {
       `uni_${safeToken(payload.university)}`,
       `borough_${safeToken(payload.preferredBorough)}`,
       `rent_${payload.minRent}_${payload.maxRent}`,
-      encoded
+      encoded,
     ].join(" ");
   }
 
@@ -82,7 +85,7 @@ export function buildTitle(kind, payload) {
       `owner_${safeToken(payload.ownerUserId)}`,
       `borough_${safeToken(payload.borough)}`,
       `rent_${payload.rentPcm}`,
-      encoded
+      encoded,
     ].join(" ");
   }
 
@@ -92,7 +95,7 @@ export function buildTitle(kind, payload) {
     `from_${safeToken(payload.fromUserId)}`,
     `to_${safeToken(payload.toUserId)}`,
     `like_${payload.liked ? "1" : "0"}`,
-    encoded
+    encoded,
   ].join(" ");
 }
 

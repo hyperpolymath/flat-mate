@@ -137,7 +137,7 @@ partial updates and compact search results, and reject lossy mappings:
 
 [source,bash]
 ----
-bun install --frozen-lockfile --cwd apps/api
+bun install --frozen-lockfile --ignore-scripts --cwd apps/api
 bun test ./apps/api/src/verisimTransport.contract.js
 ----
 

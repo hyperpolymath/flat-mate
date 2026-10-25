@@ -13,8 +13,8 @@ import {
   VERISIMDB_CONTRACT,
 } from "../../apps/api/src/verisimTransport.js";
 
-const baseUrl = Bun.env.get("VERISIMDB_BASE_URL");
-const attestedCommit = Bun.env.get("VERISIMDB_CONTRACT_COMMIT");
+const baseUrl = Bun.env.VERISIMDB_BASE_URL;
+const attestedCommit = Bun.env.VERISIMDB_CONTRACT_COMMIT;
 
 if (!baseUrl) {
   throw new Error(
