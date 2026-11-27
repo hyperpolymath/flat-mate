@@ -70,7 +70,7 @@ VERISIM_HOST=127.0.0.1 VERISIM_ENABLE_IPV4=true cargo run -p verisim-api
 [source,bash]
 ----
 cd /var/mnt/eclipse/repos/flat-mate
-npm install
+bun install
 ----
 
 . Configure the Deno API (`deno` 1.40+ needed):
